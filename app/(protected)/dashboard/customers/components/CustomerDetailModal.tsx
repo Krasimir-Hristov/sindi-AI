@@ -1,15 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  X,
-  Phone,
-  Mail,
-  MapPin,
-  Building2,
-  Edit,
-  Trash2,
-} from 'lucide-react';
+import { X, Phone, Mail, MapPin, Building2, Edit, Trash2 } from 'lucide-react';
 
 interface Customer {
   id: string;
@@ -174,9 +166,7 @@ export default function CustomerDetailModal({
                   ) : (
                     <div className='flex items-center gap-3 text-gray-400'>
                       <MapPin className='w-5 h-5' />
-                      <p className='text-sm'>
-                        Δεν έχει καταχωρηθεί διεύθυνση
-                      </p>
+                      <p className='text-sm'>Δεν έχει καταχωρηθεί διεύθυνση</p>
                     </div>
                   )}
                 </div>

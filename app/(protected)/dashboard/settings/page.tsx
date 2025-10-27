@@ -60,12 +60,9 @@ export default function CalculatorPage() {
   }, [buyPrice, sellPrice, updateSettings, loading]);
 
   // Helper function to handle price input with auto-clear of default 0
-  const handlePriceChange = (
-    value: string,
-    setter: (val: string) => void
-  ) => {
+  const handlePriceChange = (value: string, setter: (val: string) => void) => {
     let cleanValue = value;
-    
+
     // If empty or invalid, set to 0
     if (cleanValue === '' || cleanValue === '-' || cleanValue === '.') {
       setter('0');
@@ -76,7 +73,11 @@ export default function CalculatorPage() {
     cleanValue = cleanValue.replace('-', '');
 
     // If starts with 0 and next char is not a dot, remove the 0
-    if (cleanValue.startsWith('0') && cleanValue.length > 1 && cleanValue[1] !== '.') {
+    if (
+      cleanValue.startsWith('0') &&
+      cleanValue.length > 1 &&
+      cleanValue[1] !== '.'
+    ) {
       cleanValue = cleanValue.substring(1);
     }
 
@@ -92,7 +93,7 @@ export default function CalculatorPage() {
   // Helper function to handle quantity input
   const handleQuantityChange = (value: string) => {
     let cleanValue = value;
-    
+
     // If empty or invalid, set to 0
     if (cleanValue === '' || cleanValue === '-' || cleanValue === '.') {
       setQuantity('0');
@@ -103,7 +104,11 @@ export default function CalculatorPage() {
     cleanValue = cleanValue.replace('-', '');
 
     // Remove leading zeros
-    if (cleanValue.startsWith('0') && cleanValue.length > 1 && cleanValue[1] !== '.') {
+    if (
+      cleanValue.startsWith('0') &&
+      cleanValue.length > 1 &&
+      cleanValue[1] !== '.'
+    ) {
       cleanValue = cleanValue.substring(1);
     }
 
@@ -134,9 +139,7 @@ export default function CalculatorPage() {
 
   const profit = sellPriceNum - buyPriceNum;
   const profitPercentage =
-    buyPriceNum > 0
-      ? ((profit / buyPriceNum) * 100).toFixed(2)
-      : '0';
+    buyPriceNum > 0 ? ((profit / buyPriceNum) * 100).toFixed(2) : '0';
 
   if (loading) {
     return (
@@ -233,7 +236,9 @@ export default function CalculatorPage() {
                 step='0.01'
                 min='0'
                 value={sellPrice}
-                onChange={(e) => handlePriceChange(e.target.value, setSellPrice)}
+                onChange={(e) =>
+                  handlePriceChange(e.target.value, setSellPrice)
+                }
                 className='w-full px-4 py-3 pl-12 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition bg-white text-lg font-semibold'
                 placeholder='0.00'
               />
