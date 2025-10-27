@@ -3,13 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { 
-  Home, 
-  ShoppingBag, 
-  Users, 
-  Settings, 
+import {
+  Home,
+  ShoppingBag,
+  Users,
+  Settings,
   LogOut,
-  Sparkles
+  Sparkles,
 } from 'lucide-react';
 import { logout } from '@/src/lib/auth';
 
@@ -41,17 +41,20 @@ export default function Navbar({ username }: NavbarProps) {
             <div className='bg-linear-to-br from-pink-500 to-purple-600 p-2 rounded-xl shadow-lg'>
               <Sparkles className='w-6 h-6 text-white' />
             </div>
-            <Link href='/dashboard' className='text-2xl font-bold bg-linear-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent hover:from-pink-700 hover:to-purple-700 transition'>
+            <Link
+              href='/dashboard'
+              className='text-2xl font-bold bg-linear-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent hover:from-pink-700 hover:to-purple-700 transition'
+            >
               Sindi AI
             </Link>
           </motion.div>
-          
+
           {/* Navigation Links */}
           <nav className='hidden md:flex gap-2'>
             {navItems.map((item, index) => {
               const Icon = item.icon;
               const active = isActive(item.href);
-              
+
               return (
                 <motion.div
                   key={item.href}
@@ -59,13 +62,14 @@ export default function Navbar({ username }: NavbarProps) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Link 
+                  <Link
                     href={item.href}
                     className={`
                       flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-300
-                      ${active 
-                        ? 'bg-linear-to-r from-pink-500 to-purple-600 text-white shadow-lg shadow-purple-300/50' 
-                        : 'text-gray-700 hover:bg-white hover:shadow-md'
+                      ${
+                        active
+                          ? 'bg-linear-to-r from-pink-500 to-purple-600 text-white shadow-lg shadow-purple-300/50'
+                          : 'text-gray-700 hover:bg-white hover:shadow-md'
                       }
                     `}
                   >
@@ -77,7 +81,7 @@ export default function Navbar({ username }: NavbarProps) {
             })}
           </nav>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             className='flex items-center gap-4'
@@ -86,9 +90,7 @@ export default function Navbar({ username }: NavbarProps) {
               <div className='w-8 h-8 bg-linear-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm'>
                 {username.charAt(0).toUpperCase()}
               </div>
-              <span className='text-gray-700 font-medium'>
-                {username}
-              </span>
+              <span className='text-gray-700 font-medium'>{username}</span>
             </div>
             <form action={logout}>
               <motion.button
