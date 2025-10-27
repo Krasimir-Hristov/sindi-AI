@@ -44,7 +44,9 @@ async function getSupabaseClient() {
 export async function createProduct(productData: ProductData) {
   try {
     const supabase = await getSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return { error: 'Unauthorized' };
 
     const { data, error } = await supabase
@@ -64,7 +66,9 @@ export async function createProduct(productData: ProductData) {
 export async function getProducts() {
   try {
     const supabase = await getSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return null;
 
     const { data, error } = await supabase
@@ -80,10 +84,15 @@ export async function getProducts() {
   }
 }
 
-export async function updateProduct(id: string, productData: Partial<ProductData>) {
+export async function updateProduct(
+  id: string,
+  productData: Partial<ProductData>
+) {
   try {
     const supabase = await getSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return { error: 'Unauthorized' };
 
     const { data, error } = await supabase
@@ -105,7 +114,9 @@ export async function updateProduct(id: string, productData: Partial<ProductData
 export async function deleteProduct(id: string) {
   try {
     const supabase = await getSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return { error: 'Unauthorized' };
 
     const { error } = await supabase
