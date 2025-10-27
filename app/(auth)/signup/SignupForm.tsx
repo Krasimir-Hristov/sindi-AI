@@ -46,7 +46,7 @@ export default function SignupForm() {
       <div>
         <label
           htmlFor='email'
-          className='block text-sm font-medium text-gray-700 mb-2'
+          className='block text-sm font-semibold text-gray-700 mb-2'
         >
           Email
         </label>
@@ -56,7 +56,7 @@ export default function SignupForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition'
+          className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition bg-white/50'
           placeholder='example@email.com'
           autoComplete='email'
         />
@@ -65,7 +65,7 @@ export default function SignupForm() {
       <div>
         <label
           htmlFor='username'
-          className='block text-sm font-medium text-gray-700 mb-2'
+          className='block text-sm font-semibold text-gray-700 mb-2'
         >
           Όνομα Χρήστη
         </label>
@@ -75,7 +75,7 @@ export default function SignupForm() {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
-          className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition'
+          className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition bg-white/50'
           placeholder='Εισάγετε όνομα χρήστη'
           autoComplete='username'
         />
@@ -84,7 +84,7 @@ export default function SignupForm() {
       <div>
         <label
           htmlFor='password'
-          className='block text-sm font-medium text-gray-700 mb-2'
+          className='block text-sm font-semibold text-gray-700 mb-2'
         >
           Κωδικός Πρόσβασης
         </label>
@@ -94,7 +94,7 @@ export default function SignupForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition'
+          className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition bg-white/50'
           placeholder='Τουλάχιστον 6 χαρακτήρες'
           autoComplete='new-password'
         />
@@ -103,7 +103,7 @@ export default function SignupForm() {
       <div>
         <label
           htmlFor='confirmPassword'
-          className='block text-sm font-medium text-gray-700 mb-2'
+          className='block text-sm font-semibold text-gray-700 mb-2'
         >
           Επιβεβαίωση Κωδικού
         </label>
@@ -113,14 +113,14 @@ export default function SignupForm() {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
-          className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition'
+          className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition bg-white/50'
           placeholder='Επαναλάβετε τον κωδικό'
           autoComplete='new-password'
         />
       </div>
 
       {error && (
-        <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm'>
+        <div className='bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-medium'>
           {error}
         </div>
       )}
@@ -128,7 +128,7 @@ export default function SignupForm() {
       <button
         type='submit'
         disabled={loading}
-        className='w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed'
+        className='w-full bg-linear-to-r from-pink-500 to-purple-600 text-white py-3 px-4 rounded-xl font-semibold hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100'
       >
         {loading ? 'Δημιουργία λογαριασμού...' : 'Εγγραφή'}
       </button>
