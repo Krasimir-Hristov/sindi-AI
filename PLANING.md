@@ -23,15 +23,14 @@
 
 [X] Създайте файл `.env.local` в корена на проекта.
 [X] Добавете вашите Supabase ключове (взети от Settings -> API в Supabase):
-` # Вземете тези стойности от вашия Supabase проект
+`# Вземете тези стойности от вашия Supabase проект
     NEXT_PUBLIC_SUPABASE_URL="[Вашият Supabase Project URL]"
-    NEXT_PUBLIC_SUPABASE_ANON_KEY="[Вашият Public Anon Key]"
-`
+    NEXT_PUBLIC_SUPABASE_ANON_KEY="[Вашият Public Anon Key]"`
 
 ### 0.4. Настройка на Supabase Клиента
 
-[ ] Създайте папката `src/lib`.
-[ ] В нея създайте файл `src/lib/supabase.ts` и добавете кода за инициализация на клиента:
+[X] Създайте папката `src/lib`.
+[X] В нея създайте файл `src/lib/supabase.ts` и добавете кода за инициализация на клиента:
 
 ````typescript
 import { createClient } from '@supabase/supabase-js';
