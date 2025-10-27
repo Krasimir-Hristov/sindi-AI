@@ -4,11 +4,43 @@ import { createClient } from '@supabase/supabase-js';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 
-// Create a simple Supabase client
-const getSupabaseClient = () => {
+// Get the Supabase project reference from URL
+const getProjectRef = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const match = url.match(/https:\/\/([a-z]+)\./);
+  return match ? match[1] : 'unknown';
+};
+
+// Create Supabase client with cookie-based auth
+const createServerClient = async () => {
+  const cookieStore = await cookies();
+  const projectRef = getProjectRef();
+
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      auth: {
+        storage: {
+          getItem: async (key: string) => {
+            return cookieStore.get(key)?.value ?? null;
+          },
+          setItem: async (key: string, value: string) => {
+            cookieStore.set(key, value, {
+              httpOnly: false, // Supabase needs to read this
+              secure: process.env.NODE_ENV === 'production',
+              sameSite: 'lax',
+              maxAge: 60 * 60 * 24 * 7, // 7 days
+              path: '/',
+            });
+          },
+          removeItem: async (key: string) => {
+            cookieStore.delete(key);
+          },
+        },
+        storageKey: `sb-${projectRef}-auth-token`,
+      },
+    }
   );
 };
 
@@ -17,7 +49,7 @@ export async function signup(
   username: string,
   password: string
 ) {
-  const supabase = getSupabaseClient();
+  const supabase = await createServerClient();
 
   // Check if username already exists
   const { data: existingUser } = await supabase
@@ -62,84 +94,60 @@ export async function signup(
   }
 
   // Auto login after signup
-  const { data: signInData, error: signInError } =
-    await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-  if (signInError || !signInData.session) {
+  if (signInError) {
     // Signup succeeded but login failed, redirect to login
     redirect('/login');
   }
 
-  // Store session in cookie
-  const cookieStore = await cookies();
-  cookieStore.set('supabase-auth-token', signInData.session!.access_token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 7, // 7 days
-  });
-  cookieStore.set('user-id', signUpData.user.id, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 7,
-  });
-
+  // Session is automatically stored in cookies by Supabase client
   redirect('/dashboard');
 }
 
 export async function login(email: string, password: string) {
-  const supabase = getSupabaseClient();
+  const supabase = await createServerClient();
 
   // Sign in with Supabase Auth
-  const { data: signInData, error: signInError } =
-    await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-  if (signInError || !signInData.session || !signInData.user) {
+  if (signInError) {
     console.error('Sign in error:', signInError);
     return { error: 'Λάθος email ή κωδικός πρόσβασης' };
   }
 
-  // Store session in cookie
-  const cookieStore = await cookies();
-  cookieStore.set('supabase-auth-token', signInData.session.access_token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 7, // 7 days
-  });
-  cookieStore.set('user-id', signInData.user.id, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 7,
-  });
-
+  // Session is automatically stored in cookies by Supabase client
   redirect('/dashboard');
 }
 
 export async function logout() {
-  const supabase = getSupabaseClient();
-  await supabase.auth.signOut();
-  const cookieStore = await cookies();
-  cookieStore.delete('supabase-auth-token');
+  const supabase = await createServerClient();
+  await supabase.auth.signOut(); // This clears cookies automatically
   redirect('/login');
 }
 
 export async function isAuthenticated() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('supabase-auth-token');
-  return !!token;
+  // REAL AUTHENTICATION CHECK - validates with Supabase
+  const supabase = await createServerClient();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  // If there's an error or no user, they're not authenticated
+  // NOTE: We can't delete cookies here (Server Component restriction)
+  // Cookies will be cleared on next login/logout
+  return !error && !!user;
 }
 
 export async function getUser() {
-  const supabase = getSupabaseClient();
+  const supabase = await createServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -147,22 +155,26 @@ export async function getUser() {
 }
 
 export async function getUserWithUsername() {
-  const cookieStore = await cookies();
-  const userId = cookieStore.get('user-id')?.value;
+  const supabase = await createServerClient();
 
-  if (!userId) return null;
+  // Get authenticated user from Supabase
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const supabase = getSupabaseClient();
+  if (!user) return null;
+
+  // Fetch username from public.users table
   const { data: userData, error } = await supabase
     .from('users')
     .select('username')
-    .eq('id', userId)
+    .eq('id', user.id)
     .single();
 
   if (error || !userData) return null;
 
   return {
-    id: userId,
+    id: user.id,
     username: userData.username,
   };
 }

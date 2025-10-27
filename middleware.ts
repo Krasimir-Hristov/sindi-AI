@@ -4,9 +4,14 @@ import type { NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Check authentication via cookie
-  const token = request.cookies.get('supabase-auth-token');
-  const isAuthenticated = !!token;
+  // Check authentication via cookie - FIRST LAYER (quick check)
+  // This is NOT a security check, just a quick filter
+  // Real validation happens in server components
+  // Supabase stores auth token with project-specific key: sb-<project-ref>-auth-token
+  const cookies = request.cookies;
+  const hasAuthCookie = Array.from(cookies.getAll()).some(
+    (cookie) => cookie.name.startsWith('sb-') && cookie.name.endsWith('-auth-token')
+  );
 
   // Public paths that don't require authentication
   const publicPaths = ['/login', '/signup'];
@@ -14,20 +19,22 @@ export async function middleware(request: NextRequest) {
 
   // Root path redirect logic
   if (pathname === '/') {
-    if (isAuthenticated) {
+    if (hasAuthCookie) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     } else {
       return NextResponse.redirect(new URL('/login', request.url));
     }
   }
 
-  // If user is authenticated and tries to access login/signup page, redirect to dashboard
-  if (isAuthenticated && (pathname === '/login' || pathname === '/signup')) {
+  // If user has auth cookie and tries to access login/signup, redirect to dashboard
+  // They will be properly validated in the dashboard server component
+  if (hasAuthCookie && (pathname === '/login' || pathname === '/signup')) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  // If user is not authenticated and tries to access protected route, redirect to login
-  if (!isAuthenticated && !isPublicPath) {
+  // If user has NO auth cookie and tries to access protected route, redirect to login
+  // This is just UX optimization - real security is in server components
+  if (!hasAuthCookie && !isPublicPath) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
