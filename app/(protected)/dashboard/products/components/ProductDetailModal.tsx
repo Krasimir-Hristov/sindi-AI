@@ -45,7 +45,8 @@ export default function ProductDetailModal({
   if (!product) return null;
 
   const isLowStock =
-    product.min_stock_level && product.stock_quantity <= product.min_stock_level;
+    product.min_stock_level &&
+    product.stock_quantity <= product.min_stock_level;
 
   return (
     <AnimatePresence>
@@ -225,11 +226,14 @@ export default function ProductDetailModal({
                     <div>
                       <p className='text-gray-500 mb-1'>Δημιουργήθηκε</p>
                       <p className='text-gray-900 font-semibold'>
-                        {new Date(product.created_at).toLocaleDateString('el-GR', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
+                        {new Date(product.created_at).toLocaleDateString(
+                          'el-GR',
+                          {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          }
+                        )}
                       </p>
                     </div>
                   )}
@@ -237,11 +241,14 @@ export default function ProductDetailModal({
                     <div>
                       <p className='text-gray-500 mb-1'>Ενημερώθηκε</p>
                       <p className='text-gray-900 font-semibold'>
-                        {new Date(product.updated_at).toLocaleDateString('el-GR', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
+                        {new Date(product.updated_at).toLocaleDateString(
+                          'el-GR',
+                          {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          }
+                        )}
                       </p>
                     </div>
                   )}

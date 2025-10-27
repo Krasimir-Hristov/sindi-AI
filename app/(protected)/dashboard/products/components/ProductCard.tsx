@@ -30,7 +30,8 @@ export default function ProductCard({
   onDelete,
 }: ProductCardProps) {
   const isLowStock =
-    product.min_stock_level && product.stock_quantity <= product.min_stock_level;
+    product.min_stock_level &&
+    product.stock_quantity <= product.min_stock_level;
 
   return (
     <motion.div
@@ -71,7 +72,9 @@ export default function ProductCard({
               {product.name}
             </h3>
             {product.sku && (
-              <p className='text-xs text-gray-500 font-mono'>SKU: {product.sku}</p>
+              <p className='text-xs text-gray-500 font-mono'>
+                SKU: {product.sku}
+              </p>
             )}
           </div>
         </div>
