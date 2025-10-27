@@ -33,6 +33,7 @@ export default function SettingsPage() {
   const { settings, loading, updateSettings } = useSettings();
   const [buyPrice, setBuyPrice] = useState<string>('0');
   const [sellPrice, setSellPrice] = useState<string>('0');
+  const [quantity, setQuantity] = useState<string>('1');
   const [saving, setSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -203,6 +204,69 @@ export default function SettingsPage() {
               >
                 {profit >= 0 ? '+' : ''}
                 {profitPercentage}%
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Bulk Calculator */}
+        <div className='bg-linear-to-r from-purple-50 to-pink-50 rounded-xl p-6 mb-6 border-2 border-purple-200'>
+          <h3 className='text-lg font-semibold text-gray-900 mb-4'>
+            🧮 Υπολογισμός για Πολλαπλά Τενεκέδες
+          </h3>
+          
+          <div className='mb-4'>
+            <label className='block text-sm font-semibold text-gray-700 mb-2'>
+              Πόσα τενεκέδες;
+            </label>
+            <input
+              type='number'
+              min='1'
+              step='1'
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition bg-white text-lg font-semibold'
+              placeholder='1'
+            />
+          </div>
+
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+            <div className='bg-white rounded-lg p-4 shadow-md border-2 border-red-100'>
+              <p className='text-sm text-gray-600 mb-1 flex items-center gap-1'>
+                <TrendingDown className='w-4 h-4 text-red-500' />
+                Πληρωμή στον Προμηθευτή
+              </p>
+              <p className='text-2xl font-bold text-red-600'>
+                {(parseFloat(buyPrice) * parseFloat(quantity || '0')).toFixed(2)} €
+              </p>
+              <p className='text-xs text-gray-500 mt-1'>
+                {buyPrice} € × {quantity || '0'} τενεκέδες
+              </p>
+            </div>
+
+            <div className='bg-white rounded-lg p-4 shadow-md border-2 border-blue-100'>
+              <p className='text-sm text-gray-600 mb-1 flex items-center gap-1'>
+                <DollarSign className='w-4 h-4 text-blue-500' />
+                Συνολική Πώληση
+              </p>
+              <p className='text-2xl font-bold text-blue-600'>
+                {(parseFloat(sellPrice) * parseFloat(quantity || '0')).toFixed(2)} €
+              </p>
+              <p className='text-xs text-gray-500 mt-1'>
+                {sellPrice} € × {quantity || '0'} τενεκέδες
+              </p>
+            </div>
+
+            <div className='bg-white rounded-lg p-4 shadow-md border-2 border-green-100'>
+              <p className='text-sm text-gray-600 mb-1 flex items-center gap-1'>
+                <TrendingUp className='w-4 h-4 text-green-500' />
+                Καθαρό Κέρδος
+              </p>
+              <p className='text-2xl font-bold text-green-600'>
+                +{((parseFloat(sellPrice) - parseFloat(buyPrice)) * parseFloat(quantity || '0')).toFixed(2)} €
+              </p>
+              <p className='text-xs text-gray-500 mt-1'>
+                {profit.toFixed(2)} € × {quantity || '0'} τενεκέδες
               </p>
             </div>
           </div>
