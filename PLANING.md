@@ -16,17 +16,17 @@
 
 ### 0.2. Инсталиране на Зависимости
 
-[ ] Инсталирайте основните библиотеки:
+[X] Инсталирайте основните библиотеки:
 `npm install @supabase/supabase-js zod react-hook-form`
 
 ### 0.3. Конфигурация на Средата (.env)
 
 [ ] Създайте файл `.env.local` в корена на проекта.
 [ ] Добавете вашите Supabase ключове (взети от Settings -> API в Supabase):
-`   # Вземете тези стойности от вашия Supabase проект
+`  # Вземете тези стойности от вашия Supabase проект
     NEXT_PUBLIC_SUPABASE_URL="[Вашият Supabase Project URL]"
     NEXT_PUBLIC_SUPABASE_ANON_KEY="[Вашият Public Anon Key]"
-  `
+ `
 
 ### 0.4. Настройка на Supabase Клиента
 
