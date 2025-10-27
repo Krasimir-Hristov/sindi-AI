@@ -10,6 +10,7 @@ interface CustomerData {
   phone?: string;
   email?: string;
   address?: string;
+  house_number?: string;
   city?: string;
   notes?: string;
 }

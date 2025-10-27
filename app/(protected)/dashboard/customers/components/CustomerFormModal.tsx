@@ -10,6 +10,7 @@ interface Customer {
   phone?: string;
   email?: string;
   address?: string;
+  house_number?: string;
   city?: string;
   notes?: string;
 }
@@ -24,6 +25,7 @@ interface CustomerFormModalProps {
     phone: string;
     email: string;
     address: string;
+    house_number: string;
     city: string;
     notes: string;
   };
@@ -34,6 +36,7 @@ interface CustomerFormModalProps {
       phone: string;
       email: string;
       address: string;
+      house_number: string;
       city: string;
       notes: string;
     }>
@@ -148,19 +151,35 @@ export default function CustomerFormModal({
               </div>
 
               {/* Address Fields */}
-              <div>
-                <label className='block text-sm font-semibold text-gray-700 mb-2'>
-                  Διεύθυνση
-                </label>
-                <input
-                  type='text'
-                  value={formData.address}
-                  onChange={(e) =>
-                    setFormData({ ...formData, address: e.target.value })
-                  }
-                  className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition'
-                  placeholder='Οδός και αριθμός'
-                />
+              <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
+                <div className='md:col-span-3'>
+                  <label className='block text-sm font-semibold text-gray-700 mb-2'>
+                    Διεύθυνση (Οδός)
+                  </label>
+                  <input
+                    type='text'
+                    value={formData.address}
+                    onChange={(e) =>
+                      setFormData({ ...formData, address: e.target.value })
+                    }
+                    className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition'
+                    placeholder='Όνομα οδού'
+                  />
+                </div>
+                <div className='md:col-span-1'>
+                  <label className='block text-sm font-semibold text-gray-700 mb-2'>
+                    Αριθμός
+                  </label>
+                  <input
+                    type='text'
+                    value={formData.house_number}
+                    onChange={(e) =>
+                      setFormData({ ...formData, house_number: e.target.value })
+                    }
+                    className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition'
+                    placeholder='π.χ. 15'
+                  />
+                </div>
               </div>
 
               <div>

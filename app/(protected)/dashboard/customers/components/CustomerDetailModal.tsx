@@ -10,6 +10,7 @@ interface Customer {
   phone?: string;
   email?: string;
   address?: string;
+  house_number?: string;
   city?: string;
   notes?: string;
   created_at?: string;
@@ -160,6 +161,7 @@ export default function CustomerDetailModal({
                         <p className='text-xs text-gray-500'>Διεύθυνση</p>
                         <p className='text-gray-900 font-medium'>
                           {customer.address}
+                          {customer.house_number && ` ${customer.house_number}`}
                         </p>
                       </div>
                     </div>
