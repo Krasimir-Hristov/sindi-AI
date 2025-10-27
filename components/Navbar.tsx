@@ -9,32 +9,35 @@ export default async function Navbar() {
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4'>
         <div className='flex justify-between items-center'>
           <div className='flex items-center gap-8'>
-            <Link href='/dashboard' className='text-2xl font-bold text-gray-900 hover:text-blue-600 transition'>
+            <Link
+              href='/dashboard'
+              className='text-2xl font-bold text-gray-900 hover:text-blue-600 transition'
+            >
               Διαχείριση Παραγγελιών
             </Link>
-            
+
             {/* Navigation Links */}
             <nav className='hidden md:flex gap-6'>
-              <Link 
-                href='/dashboard' 
+              <Link
+                href='/dashboard'
                 className='text-gray-700 hover:text-blue-600 font-medium transition'
               >
                 Αρχική
               </Link>
-              <Link 
-                href='/dashboard/orders' 
+              <Link
+                href='/dashboard/orders'
                 className='text-gray-700 hover:text-blue-600 font-medium transition'
               >
                 Παραγγελίες
               </Link>
-              <Link 
-                href='/dashboard/customers' 
+              <Link
+                href='/dashboard/customers'
                 className='text-gray-700 hover:text-blue-600 font-medium transition'
               >
                 Πελάτες
               </Link>
-              <Link 
-                href='/dashboard/settings' 
+              <Link
+                href='/dashboard/settings'
                 className='text-gray-700 hover:text-blue-600 font-medium transition'
               >
                 Ρυθμίσεις

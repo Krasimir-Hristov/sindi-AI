@@ -10,7 +10,8 @@ export async function middleware(request: NextRequest) {
   // Supabase stores auth token with project-specific key: sb-<project-ref>-auth-token
   const cookies = request.cookies;
   const hasAuthCookie = Array.from(cookies.getAll()).some(
-    (cookie) => cookie.name.startsWith('sb-') && cookie.name.endsWith('-auth-token')
+    (cookie) =>
+      cookie.name.startsWith('sb-') && cookie.name.endsWith('-auth-token')
   );
 
   // Public paths that don't require authentication
