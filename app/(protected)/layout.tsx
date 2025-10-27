@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
-import { isAuthenticated, getUserWithUsername } from '@/src/lib/auth';
+import { isAuthenticated, getUserWithUsername } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
-import { SettingsProvider } from '@/src/contexts/SettingsContext';
+import { SettingsProvider } from '@/contexts/SettingsContext';
 
 export default async function ProtectedLayout({
   children,

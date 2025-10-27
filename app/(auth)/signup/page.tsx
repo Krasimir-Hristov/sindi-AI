@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { isAuthenticated } from '@/src/lib/auth';
+import { isAuthenticated } from '@/lib/auth';
 import SignupForm from './SignupForm';
 import Link from 'next/link';
 

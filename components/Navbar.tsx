@@ -12,7 +12,7 @@ import {
   Sparkles,
   Package,
 } from 'lucide-react';
-import { logout } from '@/src/lib/auth';
+import { logout } from '@/lib/auth';
 
 interface NavbarProps {
   username: string;

@@ -1,6 +1,6 @@
 // ПРИМЕР: Как да използваш настройките за цени на всяка страница
 
-import { useSettings } from '@/src/contexts/SettingsContext';
+import { useSettings } from '@/contexts/SettingsContext';
 
 export default function ExamplePage() {
   // 1. Импортирай useSettings hook

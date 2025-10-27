@@ -1,4 +1,4 @@
-'use server';
+﻿'use server';
 
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
@@ -27,13 +27,13 @@ async function getSupabaseClient() {
         getAll() {
           return cookieStore.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: any) {
           try {
             cookiesToSet.forEach(({ name, value, options }: any) =>
               cookieStore.set(name, value, options)
             );
           } catch {
-            // Ignore cookie errors in non-server-action contexts
+            // Ignore errors
           }
         },
       },
@@ -44,85 +44,48 @@ async function getSupabaseClient() {
 export async function createProduct(productData: ProductData) {
   try {
     const supabase = await getSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { error: 'Unauthorized' };
 
-    // Get current user
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return { error: 'Μη εξουσιοδοτημένος χρήστης' };
-    }
-
-    // Insert product
     const { data, error } = await supabase
       .from('products')
-      .insert({
-        ...productData,
-        user_id: user.id,
-      })
+      .insert({ ...productData, user_id: user.id })
       .select()
       .single();
 
-    if (error) {
-      console.error('Error creating product:', error);
-      return { error: 'Σφάλμα κατά τη δημιουργία προϊόντος' };
-    }
-
+    if (error) return { error: 'Error creating product' };
     revalidatePath('/dashboard/products');
     return { success: true, data };
   } catch (error) {
-    console.error('Unexpected error:', error);
-    return { error: 'Απροσδόκητο σφάλμα' };
+    return { error: 'Unexpected error' };
   }
 }
 
 export async function getProducts() {
   try {
     const supabase = await getSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
 
-    // Get current user
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return null;
-    }
-
-    // Fetch products
     const { data, error } = await supabase
       .from('products')
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error('Error fetching products:', error);
-      return null;
-    }
-
+    if (error) return null;
     return data;
   } catch (error) {
-    console.error('Unexpected error:', error);
     return null;
   }
 }
 
-export async function updateProduct(id: string, productData: ProductData) {
+export async function updateProduct(id: string, productData: Partial<ProductData>) {
   try {
     const supabase = await getSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { error: 'Unauthorized' };
 
-    // Get current user
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return { error: 'Μη εξουσιοδοτημένος χρήστης' };
-    }
-
-    // Update product
     const { data, error } = await supabase
       .from('products')
       .update(productData)
@@ -131,48 +94,30 @@ export async function updateProduct(id: string, productData: ProductData) {
       .select()
       .single();
 
-    if (error) {
-      console.error('Error updating product:', error);
-      return { error: 'Σφάλμα κατά την ενημέρωση προϊόντος' };
-    }
-
+    if (error) return { error: 'Error updating product' };
     revalidatePath('/dashboard/products');
     return { success: true, data };
   } catch (error) {
-    console.error('Unexpected error:', error);
-    return { error: 'Απροσδόκητο σφάλμα' };
+    return { error: 'Unexpected error' };
   }
 }
 
 export async function deleteProduct(id: string) {
   try {
     const supabase = await getSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { error: 'Unauthorized' };
 
-    // Get current user
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return { error: 'Μη εξουσιοδοτημένος χρήστης' };
-    }
-
-    // Delete product
     const { error } = await supabase
       .from('products')
       .delete()
       .eq('id', id)
       .eq('user_id', user.id);
 
-    if (error) {
-      console.error('Error deleting product:', error);
-      return { error: 'Σφάλμα κατά τη διαγραφή προϊόντος' };
-    }
-
+    if (error) return { error: 'Error deleting product' };
     revalidatePath('/dashboard/products');
     return { success: true };
   } catch (error) {
-    console.error('Unexpected error:', error);
-    return { error: 'Απροσδόκητο σφάλμα' };
+    return { error: 'Unexpected error' };
   }
 }

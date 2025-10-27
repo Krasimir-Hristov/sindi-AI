@@ -7,7 +7,7 @@ import {
   useEffect,
   ReactNode,
 } from 'react';
-import { createClient } from '@/src/lib/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 
 interface UserSettings {
   id?: string;

@@ -8,7 +8,7 @@ import {
   getCustomers,
   updateCustomer,
   deleteCustomer,
-} from '@/src/lib/actions/customers';
+} from '@/lib/actions/customers';
 import CustomerCard from './components/CustomerCard';
 import CustomerFormModal from './components/CustomerFormModal';
 import CustomerDetailModal from './components/CustomerDetailModal';

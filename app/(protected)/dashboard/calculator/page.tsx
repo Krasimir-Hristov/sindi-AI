@@ -9,7 +9,7 @@ import {
   DollarSign,
   RotateCcw,
 } from 'lucide-react';
-import { useSettings } from '@/src/contexts/SettingsContext';
+import { useSettings } from '@/contexts/SettingsContext';
 
 const containerVariants = {
   hidden: { opacity: 0 },
