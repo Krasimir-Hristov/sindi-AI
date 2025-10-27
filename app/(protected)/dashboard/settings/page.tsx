@@ -214,7 +214,7 @@ export default function SettingsPage() {
           <h3 className='text-lg font-semibold text-gray-900 mb-4'>
             🧮 Υπολογισμός για Πολλαπλά Τενεκέδες
           </h3>
-          
+
           <div className='mb-4'>
             <label className='block text-sm font-semibold text-gray-700 mb-2'>
               Πόσα τενεκέδες;
@@ -237,7 +237,10 @@ export default function SettingsPage() {
                 Πληρωμή στον Προμηθευτή
               </p>
               <p className='text-2xl font-bold text-red-600'>
-                {(parseFloat(buyPrice) * parseFloat(quantity || '0')).toFixed(2)} €
+                {(parseFloat(buyPrice) * parseFloat(quantity || '0')).toFixed(
+                  2
+                )}{' '}
+                €
               </p>
               <p className='text-xs text-gray-500 mt-1'>
                 {buyPrice} € × {quantity || '0'} τενεκέδες
@@ -250,7 +253,10 @@ export default function SettingsPage() {
                 Συνολική Πώληση
               </p>
               <p className='text-2xl font-bold text-blue-600'>
-                {(parseFloat(sellPrice) * parseFloat(quantity || '0')).toFixed(2)} €
+                {(parseFloat(sellPrice) * parseFloat(quantity || '0')).toFixed(
+                  2
+                )}{' '}
+                €
               </p>
               <p className='text-xs text-gray-500 mt-1'>
                 {sellPrice} € × {quantity || '0'} τενεκέδες
@@ -263,7 +269,12 @@ export default function SettingsPage() {
                 Καθαρό Κέρδος
               </p>
               <p className='text-2xl font-bold text-green-600'>
-                +{((parseFloat(sellPrice) - parseFloat(buyPrice)) * parseFloat(quantity || '0')).toFixed(2)} €
+                +
+                {(
+                  (parseFloat(sellPrice) - parseFloat(buyPrice)) *
+                  parseFloat(quantity || '0')
+                ).toFixed(2)}{' '}
+                €
               </p>
               <p className='text-xs text-gray-500 mt-1'>
                 {profit.toFixed(2)} € × {quantity || '0'} τενεκέδες
