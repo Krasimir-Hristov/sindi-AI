@@ -751,8 +751,12 @@ export default function CustomersPage() {
                     <AlertTriangle className='w-8 h-8 text-white' />
                   </motion.div>
                   <div className='text-white'>
-                    <h3 className='text-2xl font-bold'>{confirmAction.title}</h3>
-                    <p className='text-white/80 text-sm mt-1'>Αυτή η ενέργεια δεν μπορεί να αναιρεθεί</p>
+                    <h3 className='text-2xl font-bold'>
+                      {confirmAction.title}
+                    </h3>
+                    <p className='text-white/80 text-sm mt-1'>
+                      Αυτή η ενέργεια δεν μπορεί να αναιρεθεί
+                    </p>
                   </div>
                 </div>
               </div>
