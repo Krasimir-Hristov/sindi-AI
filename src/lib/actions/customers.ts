@@ -16,7 +16,7 @@ interface CustomerData {
 
 async function getSupabaseClient() {
   const cookieStore = await cookies();
-  
+
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -44,7 +44,9 @@ async function getSupabaseClient() {
             cookieStore.delete(key);
           },
         },
-        storageKey: `sb-${process.env.NEXT_PUBLIC_SUPABASE_URL!.split('//')[1].split('.')[0]}-auth-token`,
+        storageKey: `sb-${
+          process.env.NEXT_PUBLIC_SUPABASE_URL!.split('//')[1].split('.')[0]
+        }-auth-token`,
       },
     }
   );
@@ -53,9 +55,11 @@ async function getSupabaseClient() {
 export async function createCustomer(customerData: CustomerData) {
   try {
     const supabase = await getSupabaseClient();
-    
-    const { data: { user } } = await supabase.auth.getUser();
-    
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     if (!user) {
       return { error: 'Δεν βρέθηκε χρήστης' };
     }
@@ -84,12 +88,17 @@ export async function createCustomer(customerData: CustomerData) {
   }
 }
 
-export async function updateCustomer(id: string, customerData: Partial<CustomerData>) {
+export async function updateCustomer(
+  id: string,
+  customerData: Partial<CustomerData>
+) {
   try {
     const supabase = await getSupabaseClient();
-    
-    const { data: { user } } = await supabase.auth.getUser();
-    
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     if (!user) {
       return { error: 'Δεν βρέθηκε χρήστης' };
     }
@@ -118,9 +127,11 @@ export async function updateCustomer(id: string, customerData: Partial<CustomerD
 export async function deleteCustomer(id: string) {
   try {
     const supabase = await getSupabaseClient();
-    
-    const { data: { user } } = await supabase.auth.getUser();
-    
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     if (!user) {
       return { error: 'Δεν βρέθηκε χρήστης' };
     }
@@ -147,9 +158,11 @@ export async function deleteCustomer(id: string) {
 export async function getCustomers() {
   try {
     const supabase = await getSupabaseClient();
-    
-    const { data: { user } } = await supabase.auth.getUser();
-    
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     if (!user) {
       return { error: 'Δεν βρέθηκε χρήστης' };
     }

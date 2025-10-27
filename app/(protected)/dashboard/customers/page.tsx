@@ -15,7 +15,12 @@ import {
   Save,
   User,
 } from 'lucide-react';
-import { createCustomer, getCustomers, updateCustomer, deleteCustomer } from '@/src/lib/actions/customers';
+import {
+  createCustomer,
+  getCustomers,
+  updateCustomer,
+  deleteCustomer,
+} from '@/src/lib/actions/customers';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -53,7 +58,9 @@ export default function CustomersPage() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    null
+  );
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [formData, setFormData] = useState({
     first_name: '',
@@ -62,7 +69,7 @@ export default function CustomersPage() {
     email: '',
     address: '',
     city: '',
-    notes: ''
+    notes: '',
   });
   const [saving, setSaving] = useState(false);
 
@@ -146,7 +153,7 @@ export default function CustomersPage() {
       email: '',
       address: '',
       city: '',
-      notes: ''
+      notes: '',
     });
   };
 
@@ -173,9 +180,17 @@ export default function CustomersPage() {
   }
 
   return (
-    <motion.div variants={containerVariants} initial='hidden' animate='visible' className='space-y-8'>
+    <motion.div
+      variants={containerVariants}
+      initial='hidden'
+      animate='visible'
+      className='space-y-8'
+    >
       {/* Header */}
-      <motion.div variants={itemVariants} className='bg-white rounded-2xl shadow-lg p-8 border border-purple-100'>
+      <motion.div
+        variants={itemVariants}
+        className='bg-white rounded-2xl shadow-lg p-8 border border-purple-100'
+      >
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-4'>
             <div className='p-4 bg-linear-to-br from-pink-500 to-purple-600 rounded-2xl shadow-lg'>
@@ -186,7 +201,8 @@ export default function CustomersPage() {
                 Πελάτες
               </h1>
               <p className='text-gray-600 mt-1'>
-                {customers.length} {customers.length === 1 ? 'πελάτης' : 'πελάτες'}
+                {customers.length}{' '}
+                {customers.length === 1 ? 'πελάτης' : 'πελάτες'}
               </p>
             </div>
           </div>
@@ -204,10 +220,17 @@ export default function CustomersPage() {
 
       {/* Customers Grid */}
       {customers.length === 0 ? (
-        <motion.div variants={itemVariants} className='bg-white rounded-2xl shadow-lg p-12 border border-purple-100 text-center'>
+        <motion.div
+          variants={itemVariants}
+          className='bg-white rounded-2xl shadow-lg p-12 border border-purple-100 text-center'
+        >
           <Users className='w-16 h-16 text-gray-300 mx-auto mb-4' />
-          <h3 className='text-xl font-semibold text-gray-600 mb-2'>Δεν υπάρχουν πελάτες</h3>
-          <p className='text-gray-500 mb-6'>Ξεκινήστε προσθέτοντας τον πρώτο σας πελάτη</p>
+          <h3 className='text-xl font-semibold text-gray-600 mb-2'>
+            Δεν υπάρχουν πελάτες
+          </h3>
+          <p className='text-gray-500 mb-6'>
+            Ξεκινήστε προσθέτοντας τον πρώτο σας πελάτη
+          </p>
           <motion.button
             onClick={() => setShowModal(true)}
             whileHover={{ scale: 1.05 }}
@@ -230,14 +253,15 @@ export default function CustomersPage() {
               className='bg-white rounded-2xl shadow-lg border border-purple-100 hover:shadow-xl transition-all overflow-hidden'
             >
               {/* Clickable Card Content */}
-              <div 
+              <div
                 onClick={() => handleViewDetails(customer)}
                 className='p-6 cursor-pointer hover:bg-gray-50 transition-colors'
               >
                 <div className='flex items-start justify-between mb-4'>
                   <div className='flex items-center gap-3'>
                     <div className='w-12 h-12 bg-linear-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md'>
-                      {customer.first_name[0]}{customer.last_name[0]}
+                      {customer.first_name[0]}
+                      {customer.last_name[0]}
                     </div>
                     <div>
                       <h3 className='font-bold text-gray-900 text-lg'>
@@ -337,7 +361,9 @@ export default function CustomersPage() {
                       type='text'
                       required
                       value={formData.first_name}
-                      onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, first_name: e.target.value })
+                      }
                       className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition'
                       placeholder='Όνομα'
                     />
@@ -350,7 +376,9 @@ export default function CustomersPage() {
                       type='text'
                       required
                       value={formData.last_name}
-                      onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, last_name: e.target.value })
+                      }
                       className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition'
                       placeholder='Επώνυμο'
                     />
@@ -366,7 +394,9 @@ export default function CustomersPage() {
                     <input
                       type='tel'
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, phone: e.target.value })
+                      }
                       className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition'
                       placeholder='+30 123 456 7890'
                     />
@@ -378,7 +408,9 @@ export default function CustomersPage() {
                     <input
                       type='email'
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
                       className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition'
                       placeholder='email@example.com'
                     />
@@ -393,7 +425,9 @@ export default function CustomersPage() {
                   <input
                     type='text'
                     value={formData.address}
-                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, address: e.target.value })
+                    }
                     className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition'
                     placeholder='Οδός και αριθμός'
                   />
@@ -406,7 +440,9 @@ export default function CustomersPage() {
                   <input
                     type='text'
                     value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, city: e.target.value })
+                    }
                     className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition'
                     placeholder='Πόλη'
                   />
@@ -419,7 +455,9 @@ export default function CustomersPage() {
                   </label>
                   <textarea
                     value={formData.notes}
-                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, notes: e.target.value })
+                    }
                     rows={3}
                     className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition resize-none'
                     placeholder='Προσθέστε σημειώσεις...'
@@ -476,13 +514,17 @@ export default function CustomersPage() {
                 <div className='flex items-center justify-between'>
                   <div className='flex items-center gap-4'>
                     <div className='w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg border-2 border-white/30'>
-                      {selectedCustomer.first_name[0]}{selectedCustomer.last_name[0]}
+                      {selectedCustomer.first_name[0]}
+                      {selectedCustomer.last_name[0]}
                     </div>
                     <div className='text-white'>
                       <h2 className='text-3xl font-bold'>
-                        {selectedCustomer.first_name} {selectedCustomer.last_name}
+                        {selectedCustomer.first_name}{' '}
+                        {selectedCustomer.last_name}
                       </h2>
-                      <p className='text-white/80 text-sm mt-1'>Πληροφορίες Πελάτη</p>
+                      <p className='text-white/80 text-sm mt-1'>
+                        Πληροφορίες Πελάτη
+                      </p>
                     </div>
                   </div>
                   <button
@@ -510,7 +552,9 @@ export default function CustomersPage() {
                         </div>
                         <div>
                           <p className='text-xs text-gray-500'>Τηλέφωνο</p>
-                          <p className='text-gray-900 font-medium'>{selectedCustomer.phone}</p>
+                          <p className='text-gray-900 font-medium'>
+                            {selectedCustomer.phone}
+                          </p>
                         </div>
                       </div>
                     ) : (
@@ -519,7 +563,7 @@ export default function CustomersPage() {
                         <p className='text-sm'>Δεν έχει καταχωρηθεί τηλέφωνο</p>
                       </div>
                     )}
-                    
+
                     {selectedCustomer.email ? (
                       <div className='flex items-center gap-3'>
                         <div className='w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center'>
@@ -527,7 +571,9 @@ export default function CustomersPage() {
                         </div>
                         <div>
                           <p className='text-xs text-gray-500'>Email</p>
-                          <p className='text-gray-900 font-medium'>{selectedCustomer.email}</p>
+                          <p className='text-gray-900 font-medium'>
+                            {selectedCustomer.email}
+                          </p>
                         </div>
                       </div>
                     ) : (
@@ -553,7 +599,9 @@ export default function CustomersPage() {
                         </div>
                         <div>
                           <p className='text-xs text-gray-500'>Πόλη</p>
-                          <p className='text-gray-900 font-medium'>{selectedCustomer.city}</p>
+                          <p className='text-gray-900 font-medium'>
+                            {selectedCustomer.city}
+                          </p>
                         </div>
                       </div>
                     ) : (
@@ -562,7 +610,7 @@ export default function CustomersPage() {
                         <p className='text-sm'>Δεν έχει καταχωρηθεί πόλη</p>
                       </div>
                     )}
-                    
+
                     {selectedCustomer.address ? (
                       <div className='flex items-center gap-3'>
                         <div className='w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center'>
@@ -570,13 +618,17 @@ export default function CustomersPage() {
                         </div>
                         <div>
                           <p className='text-xs text-gray-500'>Διεύθυνση</p>
-                          <p className='text-gray-900 font-medium'>{selectedCustomer.address}</p>
+                          <p className='text-gray-900 font-medium'>
+                            {selectedCustomer.address}
+                          </p>
                         </div>
                       </div>
                     ) : (
                       <div className='flex items-center gap-3 text-gray-400'>
                         <MapPin className='w-5 h-5' />
-                        <p className='text-sm'>Δεν έχει καταχωρηθεί διεύθυνση</p>
+                        <p className='text-sm'>
+                          Δεν έχει καταχωρηθεί διεύθυνση
+                        </p>
                       </div>
                     )}
                   </div>
@@ -585,9 +637,13 @@ export default function CustomersPage() {
                 {/* Notes */}
                 {selectedCustomer.notes && (
                   <div>
-                    <h3 className='text-lg font-semibold text-gray-800 mb-4'>Σημειώσεις</h3>
+                    <h3 className='text-lg font-semibold text-gray-800 mb-4'>
+                      Σημειώσεις
+                    </h3>
                     <div className='bg-yellow-50 border border-yellow-200 rounded-xl p-4'>
-                      <p className='text-gray-700 whitespace-pre-wrap'>{selectedCustomer.notes}</p>
+                      <p className='text-gray-700 whitespace-pre-wrap'>
+                        {selectedCustomer.notes}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -597,16 +653,22 @@ export default function CustomersPage() {
                   <div className='grid grid-cols-2 gap-4 text-sm'>
                     <div>
                       <p className='text-gray-500'>ID Πελάτη</p>
-                      <p className='text-gray-900 font-mono text-xs mt-1'>{selectedCustomer.id}</p>
+                      <p className='text-gray-900 font-mono text-xs mt-1'>
+                        {selectedCustomer.id}
+                      </p>
                     </div>
                     <div>
                       <p className='text-gray-500'>Δημιουργήθηκε</p>
                       <p className='text-gray-900 font-medium mt-1'>
-                        {selectedCustomer.created_at ? new Date(selectedCustomer.created_at).toLocaleDateString('el-GR', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        }) : 'N/A'}
+                        {selectedCustomer.created_at
+                          ? new Date(
+                              selectedCustomer.created_at
+                            ).toLocaleDateString('el-GR', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })
+                          : 'N/A'}
                       </p>
                     </div>
                   </div>
@@ -628,7 +690,11 @@ export default function CustomersPage() {
                   </motion.button>
                   <motion.button
                     onClick={() => {
-                      if (confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτόν τον πελάτη;')) {
+                      if (
+                        confirm(
+                          'Είστε σίγουροι ότι θέλετε να διαγράψετε αυτόν τον πελάτη;'
+                        )
+                      ) {
                         handleDelete(selectedCustomer.id);
                         handleCloseDetailModal();
                       }
