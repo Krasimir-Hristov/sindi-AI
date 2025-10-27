@@ -12,20 +12,24 @@ const getSupabaseClient = () => {
   );
 };
 
-export async function signup(email: string, username: string, password: string) {
+export async function signup(
+  email: string,
+  username: string,
+  password: string
+) {
   const supabase = getSupabaseClient();
-  
+
   // Check if username already exists
   const { data: existingUser } = await supabase
     .from('users')
     .select('username')
     .eq('username', username)
     .single();
-  
+
   if (existingUser) {
     return { error: 'Το όνομα χρήστη υπάρχει ήδη' };
   }
-  
+
   // Create user in Supabase Auth
   const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
     email,
@@ -58,10 +62,11 @@ export async function signup(email: string, username: string, password: string) 
   }
 
   // Auto login after signup
-  const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  const { data: signInData, error: signInError } =
+    await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
   if (signInError || !signInData.session) {
     // Signup succeeded but login failed, redirect to login
@@ -88,12 +93,13 @@ export async function signup(email: string, username: string, password: string) 
 
 export async function login(email: string, password: string) {
   const supabase = getSupabaseClient();
-  
+
   // Sign in with Supabase Auth
-  const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  const { data: signInData, error: signInError } =
+    await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
   if (signInError || !signInData.session || !signInData.user) {
     console.error('Sign in error:', signInError);
@@ -134,25 +140,27 @@ export async function isAuthenticated() {
 
 export async function getUser() {
   const supabase = getSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   return user;
 }
 
 export async function getUserWithUsername() {
   const cookieStore = await cookies();
   const userId = cookieStore.get('user-id')?.value;
-  
+
   if (!userId) return null;
-  
+
   const supabase = getSupabaseClient();
   const { data: userData, error } = await supabase
     .from('users')
     .select('username')
     .eq('id', userId)
     .single();
-  
+
   if (error || !userData) return null;
-  
+
   return {
     id: userId,
     username: userData.username,

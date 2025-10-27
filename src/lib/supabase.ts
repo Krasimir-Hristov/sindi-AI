@@ -12,7 +12,7 @@ export const createClientComponentClient = () => {
 // Server-side Supabase client with cookie support
 export const createServerComponentClient = async () => {
   const cookieStore = await cookies();
-  
+
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

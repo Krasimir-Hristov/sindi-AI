@@ -23,7 +23,10 @@ export default async function LoginPage() {
         <div className='mt-6 text-center'>
           <p className='text-sm text-gray-600'>
             Δεν έχετε λογαριασμό;{' '}
-            <Link href='/signup' className='text-blue-600 font-medium hover:text-blue-700 hover:underline'>
+            <Link
+              href='/signup'
+              className='text-blue-600 font-medium hover:text-blue-700 hover:underline'
+            >
               Εγγραφείτε
             </Link>
           </p>

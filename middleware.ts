@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  
+
   // Check authentication via cookie
   const token = request.cookies.get('supabase-auth-token');
   const isAuthenticated = !!token;
