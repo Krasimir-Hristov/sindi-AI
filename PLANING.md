@@ -10,10 +10,9 @@
 
 ### 0.1. Инициализация на Проекта
 
-[ ] Стартирайте създаването на Next.js проекта:
+[X] Стартирайте създаването на Next.js проекта:
 `npx create-next-app@latest my-olive-oil-manager --ts --tailwind --app --src-dir`
-[ ] Изберете всички препоръчителни настройки (TypeScript, ESLint, Tailwind, App Router, Source Directory).
-[ ] Преминете в папката на проекта: `cd my-olive-oil-manager`
+[X] Изберете всички препоръчителни настройки (TypeScript, ESLint, Tailwind, App Router, Source Directory).
 
 ### 0.2. Инсталиране на Зависимости
 
@@ -24,16 +23,17 @@
 
 [ ] Създайте файл `.env.local` в корена на проекта.
 [ ] Добавете вашите Supabase ключове (взети от Settings -> API в Supabase):
-`    # Вземете тези стойности от вашия Supabase проект
+`   # Вземете тези стойности от вашия Supabase проект
     NEXT_PUBLIC_SUPABASE_URL="[Вашият Supabase Project URL]"
     NEXT_PUBLIC_SUPABASE_ANON_KEY="[Вашият Public Anon Key]"
-   `
+  `
 
 ### 0.4. Настройка на Supabase Клиента
 
 [ ] Създайте папката `src/lib`.
 [ ] В нея създайте файл `src/lib/supabase.ts` и добавете кода за инициализация на клиента:
-```typescript
+
+````typescript
 import { createClient } from '@supabase/supabase-js';
 
     // Създава клиента за използване в Server Components / Server Actions
@@ -212,3 +212,4 @@ cost_price_per_tin: number;
 ---
 
 **КРАЙ НА ПЛАНА**
+````
