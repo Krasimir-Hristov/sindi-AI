@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import { cookies } from 'next/headers';
 
 // Client-side Supabase client
 export const createClientComponentClient = () => {
@@ -9,28 +8,11 @@ export const createClientComponentClient = () => {
   );
 };
 
-// Server-side Supabase client with cookie support
-export const createServerComponentClient = async () => {
-  const cookieStore = await cookies();
-
+// Server-side Supabase client (simplified without cookie storage)
+export const createServerComponentClient = () => {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      auth: {
-        storage: {
-          getItem: async (key: string) => {
-            return cookieStore.get(key)?.value ?? null;
-          },
-          setItem: async (key: string, value: string) => {
-            cookieStore.set(key, value);
-          },
-          removeItem: async (key: string) => {
-            cookieStore.delete(key);
-          },
-        },
-      },
-    }
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 };
 

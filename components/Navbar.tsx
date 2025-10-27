@@ -100,7 +100,9 @@ export default function Navbar({ username }: NavbarProps) {
                 className='flex items-center gap-2 px-4 py-2 bg-linear-to-r from-red-500 to-pink-600 text-white rounded-full hover:from-red-600 hover:to-pink-700 transition shadow-lg shadow-red-300/50 font-medium'
               >
                 <LogOut className='w-4 h-4' />
-                <span className='hidden sm:inline'>Αποσύνδεση</span>
+                <span className='hidden cursor-pointer sm:inline'>
+                  Αποσύνδεση
+                </span>
               </motion.button>
             </form>
           </motion.div>

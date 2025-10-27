@@ -33,7 +33,7 @@ export default function CalculatorPage() {
   const { settings, loading, updateSettings } = useSettings();
   const [buyPrice, setBuyPrice] = useState<string>('0');
   const [sellPrice, setSellPrice] = useState<string>('0');
-  const [quantity, setQuantity] = useState<string>('1');
+  const [quantity, setQuantity] = useState<string>('0');
 
   // Load from database on mount
   useEffect(() => {
@@ -59,10 +59,67 @@ export default function CalculatorPage() {
     return () => clearTimeout(timer);
   }, [buyPrice, sellPrice, updateSettings, loading]);
 
+  // Helper function to handle price input with auto-clear of default 0
+  const handlePriceChange = (
+    value: string,
+    setter: (val: string) => void
+  ) => {
+    let cleanValue = value;
+    
+    // If empty or invalid, set to 0
+    if (cleanValue === '' || cleanValue === '-' || cleanValue === '.') {
+      setter('0');
+      return;
+    }
+
+    // Remove negative sign (no negatives allowed)
+    cleanValue = cleanValue.replace('-', '');
+
+    // If starts with 0 and next char is not a dot, remove the 0
+    if (cleanValue.startsWith('0') && cleanValue.length > 1 && cleanValue[1] !== '.') {
+      cleanValue = cleanValue.substring(1);
+    }
+
+    // If somehow becomes empty, set to 0
+    if (cleanValue === '') {
+      setter('0');
+      return;
+    }
+
+    setter(cleanValue);
+  };
+
+  // Helper function to handle quantity input
+  const handleQuantityChange = (value: string) => {
+    let cleanValue = value;
+    
+    // If empty or invalid, set to 0
+    if (cleanValue === '' || cleanValue === '-' || cleanValue === '.') {
+      setQuantity('0');
+      return;
+    }
+
+    // Remove negative sign
+    cleanValue = cleanValue.replace('-', '');
+
+    // Remove leading zeros
+    if (cleanValue.startsWith('0') && cleanValue.length > 1 && cleanValue[1] !== '.') {
+      cleanValue = cleanValue.substring(1);
+    }
+
+    // If somehow becomes empty, set to 0
+    if (cleanValue === '') {
+      setQuantity('0');
+      return;
+    }
+
+    setQuantity(cleanValue);
+  };
+
   const handleReset = async () => {
     setBuyPrice('0');
     setSellPrice('0');
-    setQuantity('1');
+    setQuantity('0');
     try {
       await updateSettings(0, 0);
     } catch (err) {
@@ -70,10 +127,15 @@ export default function CalculatorPage() {
     }
   };
 
-  const profit = parseFloat(sellPrice) - parseFloat(buyPrice);
+  // Safe number parsing with fallback to 0
+  const buyPriceNum = parseFloat(buyPrice) || 0;
+  const sellPriceNum = parseFloat(sellPrice) || 0;
+  const quantityNum = parseFloat(quantity) || 0;
+
+  const profit = sellPriceNum - buyPriceNum;
   const profitPercentage =
-    parseFloat(buyPrice) > 0
-      ? ((profit / parseFloat(buyPrice)) * 100).toFixed(2)
+    buyPriceNum > 0
+      ? ((profit / buyPriceNum) * 100).toFixed(2)
       : '0';
 
   if (loading) {
@@ -112,15 +174,13 @@ export default function CalculatorPage() {
               <p className='text-gray-600 mt-1'>Υπολογισμός κέρδους για λάδι</p>
             </div>
           </div>
-          <motion.button
+          <button
             onClick={handleReset}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className='flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-all shadow-sm'
+            className='reset-button flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-all shadow-sm hover:scale-105 active:scale-95'
           >
             <RotateCcw className='w-4 h-4' />
             Επαναφορά
-          </motion.button>
+          </button>
         </div>
       </motion.div>
 
@@ -148,7 +208,7 @@ export default function CalculatorPage() {
                 step='0.01'
                 min='0'
                 value={buyPrice}
-                onChange={(e) => setBuyPrice(e.target.value)}
+                onChange={(e) => handlePriceChange(e.target.value, setBuyPrice)}
                 className='w-full px-4 py-3 pl-12 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition bg-white text-lg font-semibold'
                 placeholder='0.00'
               />
@@ -173,7 +233,7 @@ export default function CalculatorPage() {
                 step='0.01'
                 min='0'
                 value={sellPrice}
-                onChange={(e) => setSellPrice(e.target.value)}
+                onChange={(e) => handlePriceChange(e.target.value, setSellPrice)}
                 className='w-full px-4 py-3 pl-12 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition bg-white text-lg font-semibold'
                 placeholder='0.00'
               />
@@ -228,12 +288,12 @@ export default function CalculatorPage() {
             </label>
             <input
               type='number'
-              min='1'
+              min='0'
               step='1'
               value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
+              onChange={(e) => handleQuantityChange(e.target.value)}
               className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition bg-white text-lg font-semibold'
-              placeholder='1'
+              placeholder='0'
             />
           </div>
 
@@ -244,13 +304,10 @@ export default function CalculatorPage() {
                 Πληρωμή στον Προμηθευτή
               </p>
               <p className='text-2xl font-bold text-red-600'>
-                {(parseFloat(buyPrice) * parseFloat(quantity || '0')).toFixed(
-                  2
-                )}{' '}
-                €
+                {(buyPriceNum * quantityNum).toFixed(2)} €
               </p>
               <p className='text-xs text-gray-500 mt-1'>
-                {buyPrice} € × {quantity || '0'} τενεκέδες
+                {buyPriceNum.toFixed(2)} € × {quantityNum} τενεκέδες
               </p>
             </div>
 
@@ -260,13 +317,10 @@ export default function CalculatorPage() {
                 Συνολική Πώληση
               </p>
               <p className='text-2xl font-bold text-blue-600'>
-                {(parseFloat(sellPrice) * parseFloat(quantity || '0')).toFixed(
-                  2
-                )}{' '}
-                €
+                {(sellPriceNum * quantityNum).toFixed(2)} €
               </p>
               <p className='text-xs text-gray-500 mt-1'>
-                {sellPrice} € × {quantity || '0'} τενεκέδες
+                {sellPriceNum.toFixed(2)} € × {quantityNum} τενεκέδες
               </p>
             </div>
 
@@ -276,15 +330,10 @@ export default function CalculatorPage() {
                 Καθαρό Κέρδος
               </p>
               <p className='text-2xl font-bold text-green-600'>
-                +
-                {(
-                  (parseFloat(sellPrice) - parseFloat(buyPrice)) *
-                  parseFloat(quantity || '0')
-                ).toFixed(2)}{' '}
-                €
+                +{(profit * quantityNum).toFixed(2)} €
               </p>
               <p className='text-xs text-gray-500 mt-1'>
-                {profit.toFixed(2)} € × {quantity || '0'} τενεκέδες
+                {profit.toFixed(2)} € × {quantityNum} τενεκέδες
               </p>
             </div>
           </div>

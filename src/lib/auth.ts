@@ -1,44 +1,32 @@
 'use server';
 
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient } from '@supabase/ssr';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 
-// Get the Supabase project reference from URL
-const getProjectRef = () => {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const match = url.match(/https:\/\/([a-z]+)\./);
-  return match ? match[1] : 'unknown';
-};
-
-// Create Supabase client with cookie-based auth
-const createServerClient = async () => {
+// Create Supabase client with proper SSR cookie handling
+const getSupabaseClient = async () => {
   const cookieStore = await cookies();
-  const projectRef = getProjectRef();
 
-  return createClient(
+  return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      auth: {
-        storage: {
-          getItem: async (key: string) => {
-            return cookieStore.get(key)?.value ?? null;
-          },
-          setItem: async (key: string, value: string) => {
-            cookieStore.set(key, value, {
-              httpOnly: false, // Supabase needs to read this
-              secure: process.env.NODE_ENV === 'production',
-              sameSite: 'lax',
-              maxAge: 60 * 60 * 24 * 7, // 7 days
-              path: '/',
-            });
-          },
-          removeItem: async (key: string) => {
-            cookieStore.delete(key);
-          },
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
         },
-        storageKey: `sb-${projectRef}-auth-token`,
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {
+            // The `setAll` method was called from a Server Component.
+            // This can be ignored if you have middleware refreshing
+            // user sessions.
+          }
+        },
       },
     }
   );
@@ -49,7 +37,7 @@ export async function signup(
   username: string,
   password: string
 ) {
-  const supabase = await createServerClient();
+  const supabase = await getSupabaseClient();
 
   // Check if username already exists
   const { data: existingUser } = await supabase
@@ -109,7 +97,7 @@ export async function signup(
 }
 
 export async function login(email: string, password: string) {
-  const supabase = await createServerClient();
+  const supabase = await getSupabaseClient();
 
   // Sign in with Supabase Auth
   const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -127,14 +115,14 @@ export async function login(email: string, password: string) {
 }
 
 export async function logout() {
-  const supabase = await createServerClient();
+  const supabase = await getSupabaseClient();
   await supabase.auth.signOut(); // This clears cookies automatically
   redirect('/login');
 }
 
 export async function isAuthenticated() {
   // REAL AUTHENTICATION CHECK - validates with Supabase
-  const supabase = await createServerClient();
+  const supabase = await getSupabaseClient();
   const {
     data: { user },
     error,
@@ -147,7 +135,7 @@ export async function isAuthenticated() {
 }
 
 export async function getUser() {
-  const supabase = await createServerClient();
+  const supabase = await getSupabaseClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -155,7 +143,7 @@ export async function getUser() {
 }
 
 export async function getUserWithUsername() {
-  const supabase = await createServerClient();
+  const supabase = await getSupabaseClient();
 
   // Get authenticated user from Supabase
   const {
