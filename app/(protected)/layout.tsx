@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { isAuthenticated } from '@/src/lib/auth';
+import { isAuthenticated, getUserWithUsername } from '@/src/lib/auth';
 import Navbar from '@/components/Navbar';
 
 export default async function ProtectedLayout({
@@ -16,9 +16,11 @@ export default async function ProtectedLayout({
     redirect('/login');
   }
 
+  const user = await getUserWithUsername();
+
   return (
-    <div className='min-h-screen bg-gray-50'>
-      <Navbar />
+    <div className='min-h-screen bg-linear-to-br from-pink-50 via-purple-50 to-blue-50'>
+      <Navbar username={user?.username || 'User'} />
       <main className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {children}
       </main>
