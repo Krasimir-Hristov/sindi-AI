@@ -90,7 +90,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        throw new Error('No user found');
+        // Silently ignore if no user (happens during initial load)
+        console.warn('Cannot update settings: No user found');
+        return;
       }
 
       const { data, error } = await supabase

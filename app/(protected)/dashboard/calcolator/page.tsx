@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
-  DollarSign,
+  Calculator,
   TrendingDown,
   TrendingUp,
-  Save,
-  RefreshCw,
+  DollarSign,
+  RotateCcw,
 } from 'lucide-react';
 import { useSettings } from '@/src/contexts/SettingsContext';
 
@@ -29,14 +29,13 @@ const itemVariants = {
   },
 };
 
-export default function SettingsPage() {
+export default function CalculatorPage() {
   const { settings, loading, updateSettings } = useSettings();
   const [buyPrice, setBuyPrice] = useState<string>('0');
   const [sellPrice, setSellPrice] = useState<string>('0');
   const [quantity, setQuantity] = useState<string>('1');
-  const [saving, setSaving] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
 
+  // Load from database on mount
   useEffect(() => {
     if (!loading && settings) {
       setBuyPrice(settings.buy_price.toString());
@@ -44,33 +43,30 @@ export default function SettingsPage() {
     }
   }, [settings, loading]);
 
-  const handleSave = async () => {
+  // Auto-save to database whenever values change (debounced)
+  useEffect(() => {
+    const buyNum = parseFloat(buyPrice);
+    const sellNum = parseFloat(sellPrice);
+    
+    if (isNaN(buyNum) || isNaN(sellNum) || loading) return;
+
+    const timer = setTimeout(() => {
+      updateSettings(buyNum, sellNum).catch(err => {
+        console.error('Error auto-saving calculator:', err);
+      });
+    }, 1000); // Debounce 1 second
+
+    return () => clearTimeout(timer);
+  }, [buyPrice, sellPrice, updateSettings, loading]);
+
+  const handleReset = async () => {
+    setBuyPrice('0');
+    setSellPrice('0');
+    setQuantity('1');
     try {
-      setSaving(true);
-      setSuccessMessage('');
-
-      const buyPriceNum = parseFloat(buyPrice);
-      const sellPriceNum = parseFloat(sellPrice);
-
-      if (isNaN(buyPriceNum) || isNaN(sellPriceNum)) {
-        alert('Παρακαλώ εισάγετε έγκυρες τιμές');
-        return;
-      }
-
-      if (buyPriceNum < 0 || sellPriceNum < 0) {
-        alert('Οι τιμές δεν μπορούν να είναι αρνητικές');
-        return;
-      }
-
-      await updateSettings(buyPriceNum, sellPriceNum);
-      setSuccessMessage('Οι ρυθμίσεις αποθηκεύτηκαν επιτυχώς! ✓');
-
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (error) {
-      console.error('Error saving settings:', error);
-      alert('Σφάλμα κατά την αποθήκευση των ρυθμίσεων');
-    } finally {
-      setSaving(false);
+      await updateSettings(0, 0);
+    } catch (err) {
+      console.error('Error resetting calculator:', err);
     }
   };
 
@@ -104,16 +100,29 @@ export default function SettingsPage() {
         variants={itemVariants}
         className='bg-white rounded-2xl shadow-lg p-8 border border-purple-100'
       >
-        <div className='flex items-center gap-4'>
-          <div className='p-4 bg-linear-to-br from-pink-500 to-purple-600 rounded-2xl shadow-lg'>
-            <DollarSign className='w-8 h-8 text-white' />
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center gap-4'>
+            <div className='p-4 bg-linear-to-br from-pink-500 to-purple-600 rounded-2xl shadow-lg'>
+              <Calculator className='w-8 h-8 text-white' />
+            </div>
+            <div>
+              <h1 className='text-4xl font-bold bg-linear-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent'>
+                Υπολογιστής Κέρδους
+              </h1>
+              <p className='text-gray-600 mt-1'>
+                Υπολογισμός κέρδους για λάδι
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className='text-4xl font-bold bg-linear-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent'>
-              Ρυθμίσεις Τιμών
-            </h1>
-            <p className='text-gray-600 mt-1'>Διαχείριση τιμών λαδιού</p>
-          </div>
+          <motion.button
+            onClick={handleReset}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className='flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-all shadow-sm'
+          >
+            <RotateCcw className='w-4 h-4' />
+            Επαναφορά
+          </motion.button>
         </div>
       </motion.div>
 
@@ -282,38 +291,6 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
-
-        {/* Success Message */}
-        {successMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className='bg-green-50 border-2 border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm font-medium mb-6'
-          >
-            {successMessage}
-          </motion.div>
-        )}
-
-        {/* Save Button */}
-        <motion.button
-          onClick={handleSave}
-          disabled={saving}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className='w-full bg-linear-to-r from-pink-500 to-purple-600 text-white py-4 px-6 rounded-xl font-semibold hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2'
-        >
-          {saving ? (
-            <>
-              <RefreshCw className='w-5 h-5 animate-spin' />
-              Αποθήκευση...
-            </>
-          ) : (
-            <>
-              <Save className='w-5 h-5' />
-              Αποθήκευση Ρυθμίσεων
-            </>
-          )}
-        </motion.button>
       </motion.div>
 
       {/* Info Section */}
@@ -325,9 +302,8 @@ export default function SettingsPage() {
           ℹ️ Πληροφορίες
         </h3>
         <p className='text-blue-800'>
-          Αυτές οι τιμές θα χρησιμοποιηθούν για τον υπολογισμό του κέρδους σε
-          όλες τις σελίδες της εφαρμογής. Αλλάξτε τις όταν αγοράζετε ή πουλάτε
-          σε νέες τιμές.
+          Ο υπολογιστής αποθηκεύει αυτόματα τις τελευταίες τιμές που εισαγάγατε. 
+          Οι τιμές θα είναι διαθέσιμες ακόμα και μετά από έξοδο και επανασύνδεση.
         </p>
       </motion.div>
     </motion.div>

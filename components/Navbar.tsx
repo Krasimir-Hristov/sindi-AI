@@ -24,7 +24,7 @@ export default function Navbar({ username }: NavbarProps) {
     { href: '/dashboard', label: 'Αρχική', icon: Home },
     { href: '/dashboard/orders', label: 'Παραγγελίες', icon: ShoppingBag },
     { href: '/dashboard/customers', label: 'Πελάτες', icon: Users },
-    { href: '/dashboard/settings', label: 'Ρυθμίσεις', icon: Settings },
+    { href: '/dashboard/calcolator', label: 'Υπολογιστής', icon: Settings },
   ];
 
   const isActive = (href: string) => pathname === href;
