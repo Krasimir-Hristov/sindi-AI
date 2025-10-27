@@ -47,11 +47,11 @@ export default function CalculatorPage() {
   useEffect(() => {
     const buyNum = parseFloat(buyPrice);
     const sellNum = parseFloat(sellPrice);
-    
+
     if (isNaN(buyNum) || isNaN(sellNum) || loading) return;
 
     const timer = setTimeout(() => {
-      updateSettings(buyNum, sellNum).catch(err => {
+      updateSettings(buyNum, sellNum).catch((err) => {
         console.error('Error auto-saving calculator:', err);
       });
     }, 1000); // Debounce 1 second
@@ -109,16 +109,14 @@ export default function CalculatorPage() {
               <h1 className='text-4xl font-bold bg-linear-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent'>
                 Υπολογιστής Κέρδους
               </h1>
-              <p className='text-gray-600 mt-1'>
-                Υπολογισμός κέρδους για λάδι
-              </p>
+              <p className='text-gray-600 mt-1'>Υπολογισμός κέρδους για λάδι</p>
             </div>
           </div>
           <motion.button
             onClick={handleReset}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className='flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-all shadow-sm'
+            className='flex items-center gap-2 px-4 py-2 bg-gray-100 cursor-pointer hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-all shadow-sm'
           >
             <RotateCcw className='w-4 h-4' />
             Επαναφορά
@@ -302,8 +300,9 @@ export default function CalculatorPage() {
           ℹ️ Πληροφορίες
         </h3>
         <p className='text-blue-800'>
-          Ο υπολογιστής αποθηκεύει αυτόματα τις τελευταίες τιμές που εισαγάγατε. 
-          Οι τιμές θα είναι διαθέσιμες ακόμα και μετά από έξοδο και επανασύνδεση.
+          Ο υπολογιστής αποθηκεύει αυτόματα τις τελευταίες τιμές που εισαγάγατε.
+          Οι τιμές θα είναι διαθέσιμες ακόμα και μετά από έξοδο και
+          επανασύνδεση.
         </p>
       </motion.div>
     </motion.div>
