@@ -1,6 +1,12 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 import { createClient } from '@/src/lib/supabase/client';
 
 interface UserSettings {
@@ -16,7 +22,9 @@ interface SettingsContextType {
   refreshSettings: () => Promise<void>;
 }
 
-const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
+const SettingsContext = createContext<SettingsContextType | undefined>(
+  undefined
+);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<UserSettings>({
@@ -28,10 +36,12 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const fetchSettings = async () => {
     try {
       const supabase = createClient();
-      
+
       // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       if (!user) {
         setLoading(false);
         return;
@@ -74,9 +84,11 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const updateSettings = async (buyPrice: number, sellPrice: number) => {
     try {
       const supabase = createClient();
-      
-      const { data: { user } } = await supabase.auth.getUser();
-      
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       if (!user) {
         throw new Error('No user found');
       }
@@ -112,7 +124,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <SettingsContext.Provider value={{ settings, loading, updateSettings, refreshSettings }}>
+    <SettingsContext.Provider
+      value={{ settings, loading, updateSettings, refreshSettings }}
+    >
       {children}
     </SettingsContext.Provider>
   );

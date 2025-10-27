@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { DollarSign, TrendingDown, TrendingUp, Save, RefreshCw } from 'lucide-react';
+import {
+  DollarSign,
+  TrendingDown,
+  TrendingUp,
+  Save,
+  RefreshCw,
+} from 'lucide-react';
 import { useSettings } from '@/src/contexts/SettingsContext';
 
 const containerVariants = {
@@ -57,7 +63,7 @@ export default function SettingsPage() {
 
       await updateSettings(buyPriceNum, sellPriceNum);
       setSuccessMessage('Οι ρυθμίσεις αποθηκεύτηκαν επιτυχώς! ✓');
-      
+
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
       console.error('Error saving settings:', error);
@@ -68,9 +74,10 @@ export default function SettingsPage() {
   };
 
   const profit = parseFloat(sellPrice) - parseFloat(buyPrice);
-  const profitPercentage = parseFloat(buyPrice) > 0 
-    ? ((profit / parseFloat(buyPrice)) * 100).toFixed(2)
-    : '0';
+  const profitPercentage =
+    parseFloat(buyPrice) > 0
+      ? ((profit / parseFloat(buyPrice)) * 100).toFixed(2)
+      : '0';
 
   if (loading) {
     return (
@@ -92,7 +99,10 @@ export default function SettingsPage() {
       className='space-y-8'
     >
       {/* Header */}
-      <motion.div variants={itemVariants} className='bg-white rounded-2xl shadow-lg p-8 border border-purple-100'>
+      <motion.div
+        variants={itemVariants}
+        className='bg-white rounded-2xl shadow-lg p-8 border border-purple-100'
+      >
         <div className='flex items-center gap-4'>
           <div className='p-4 bg-linear-to-br from-pink-500 to-purple-600 rounded-2xl shadow-lg'>
             <DollarSign className='w-8 h-8 text-white' />
@@ -107,9 +117,14 @@ export default function SettingsPage() {
       </motion.div>
 
       {/* Price Settings */}
-      <motion.div variants={itemVariants} className='bg-white rounded-2xl shadow-lg p-8 border border-purple-100'>
-        <h2 className='text-2xl font-bold text-gray-900 mb-6'>Τιμές Λαδιού (τενεκές)</h2>
-        
+      <motion.div
+        variants={itemVariants}
+        className='bg-white rounded-2xl shadow-lg p-8 border border-purple-100'
+      >
+        <h2 className='text-2xl font-bold text-gray-900 mb-6'>
+          Τιμές Λαδιού (τενεκές)
+        </h2>
+
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-6'>
           {/* Buy Price */}
           <div>
@@ -131,7 +146,9 @@ export default function SettingsPage() {
               />
               <DollarSign className='absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400' />
             </div>
-            <p className='text-sm text-gray-500 mt-2'>Τιμή που αγοράζετε τον τενεκέ λαδιού</p>
+            <p className='text-sm text-gray-500 mt-2'>
+              Τιμή που αγοράζετε τον τενεκέ λαδιού
+            </p>
           </div>
 
           {/* Sell Price */}
@@ -154,24 +171,38 @@ export default function SettingsPage() {
               />
               <DollarSign className='absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400' />
             </div>
-            <p className='text-sm text-gray-500 mt-2'>Τιμή που πουλάτε τον τενεκέ λαδιού</p>
+            <p className='text-sm text-gray-500 mt-2'>
+              Τιμή που πουλάτε τον τενεκέ λαδιού
+            </p>
           </div>
         </div>
 
         {/* Profit Calculation */}
         <div className='bg-linear-to-r from-pink-50 to-purple-50 rounded-xl p-6 mb-6'>
-          <h3 className='text-lg font-semibold text-gray-900 mb-4'>Κέρδος ανά Τενεκέ</h3>
+          <h3 className='text-lg font-semibold text-gray-900 mb-4'>
+            Κέρδος ανά Τενεκέ
+          </h3>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div className='bg-white rounded-lg p-4 shadow-sm'>
               <p className='text-sm text-gray-600 mb-1'>Κέρδος σε €</p>
-              <p className={`text-2xl font-bold ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {profit >= 0 ? '+' : ''}{profit.toFixed(2)} €
+              <p
+                className={`text-2xl font-bold ${
+                  profit >= 0 ? 'text-green-600' : 'text-red-600'
+                }`}
+              >
+                {profit >= 0 ? '+' : ''}
+                {profit.toFixed(2)} €
               </p>
             </div>
             <div className='bg-white rounded-lg p-4 shadow-sm'>
               <p className='text-sm text-gray-600 mb-1'>Ποσοστό Κέρδους</p>
-              <p className={`text-2xl font-bold ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {profit >= 0 ? '+' : ''}{profitPercentage}%
+              <p
+                className={`text-2xl font-bold ${
+                  profit >= 0 ? 'text-green-600' : 'text-red-600'
+                }`}
+              >
+                {profit >= 0 ? '+' : ''}
+                {profitPercentage}%
               </p>
             </div>
           </div>
@@ -211,11 +242,17 @@ export default function SettingsPage() {
       </motion.div>
 
       {/* Info Section */}
-      <motion.div variants={itemVariants} className='bg-blue-50 border-2 border-blue-200 rounded-2xl p-6'>
-        <h3 className='text-lg font-semibold text-blue-900 mb-2'>ℹ️ Πληροφορίες</h3>
+      <motion.div
+        variants={itemVariants}
+        className='bg-blue-50 border-2 border-blue-200 rounded-2xl p-6'
+      >
+        <h3 className='text-lg font-semibold text-blue-900 mb-2'>
+          ℹ️ Πληροφορίες
+        </h3>
         <p className='text-blue-800'>
-          Αυτές οι τιμές θα χρησιμοποιηθούν για τον υπολογισμό του κέρδους σε όλες τις σελίδες της εφαρμογής. 
-          Αλλάξτε τις όταν αγοράζετε ή πουλάτε σε νέες τιμές.
+          Αυτές οι τιμές θα χρησιμοποιηθούν για τον υπολογισμό του κέρδους σε
+          όλες τις σελίδες της εφαρμογής. Αλλάξτε τις όταν αγοράζετε ή πουλάτε
+          σε νέες τιμές.
         </p>
       </motion.div>
     </motion.div>
