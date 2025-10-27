@@ -10,6 +10,7 @@ import {
   Settings,
   LogOut,
   Sparkles,
+  Package,
 } from 'lucide-react';
 import { logout } from '@/src/lib/auth';
 
@@ -23,6 +24,7 @@ export default function Navbar({ username }: NavbarProps) {
   const navItems = [
     { href: '/dashboard', label: 'Αρχική', icon: Home },
     { href: '/dashboard/orders', label: 'Παραγγελίες', icon: ShoppingBag },
+    { href: '/dashboard/products', label: 'Προϊόντα', icon: Package },
     { href: '/dashboard/customers', label: 'Πελάτες', icon: Users },
     { href: '/dashboard/calcolator', label: 'Υπολογιστής', icon: Settings },
   ];

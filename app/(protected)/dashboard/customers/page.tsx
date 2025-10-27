@@ -39,6 +39,7 @@ interface Customer {
   phone?: string;
   email?: string;
   address?: string;
+  house_number?: string;
   city?: string;
   notes?: string;
   created_at?: string;
@@ -66,6 +67,7 @@ export default function CustomersPage() {
     phone: '',
     email: '',
     address: '',
+    house_number: '',
     city: '',
     notes: '',
   });
@@ -122,6 +124,7 @@ export default function CustomersPage() {
       phone: customer.phone || '',
       email: customer.email || '',
       address: customer.address || '',
+      house_number: customer.house_number || '',
       city: customer.city || '',
       notes: customer.notes || '',
     });
@@ -157,6 +160,7 @@ export default function CustomersPage() {
       phone: '',
       email: '',
       address: '',
+      house_number: '',
       city: '',
       notes: '',
     });
