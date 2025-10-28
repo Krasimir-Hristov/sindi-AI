@@ -1,23 +1,43 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, CheckCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle, LucideIcon } from 'lucide-react';
+import { ReactNode } from 'react';
 
-interface CancelOrderModalProps {
+interface ConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   title: string;
   message: string;
+  icon?: LucideIcon;
+  confirmButtonText?: string;
+  confirmButtonColor?: 'red' | 'blue' | 'green';
+  additionalContent?: ReactNode;
 }
 
-export default function CancelOrderModal({
+export default function ConfirmModal({
   isOpen,
   onClose,
   onConfirm,
   title,
   message,
-}: CancelOrderModalProps) {
+  icon: Icon = AlertTriangle,
+  confirmButtonText = 'Ναι, Διαγραφή',
+  confirmButtonColor = 'red',
+  additionalContent,
+}: ConfirmModalProps) {
+  const getButtonColors = () => {
+    switch (confirmButtonColor) {
+      case 'blue':
+        return 'from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700';
+      case 'green':
+        return 'from-green-500 to-green-600 hover:from-green-600 hover:to-green-700';
+      default:
+        return 'from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600';
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -36,7 +56,7 @@ export default function CancelOrderModal({
             className='bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden'
           >
             {/* Header with Icon */}
-            <div className='bg-linear-to-r from-red-500 to-orange-500 p-6'>
+            <div className={`bg-linear-to-r ${confirmButtonColor === 'blue' ? 'from-blue-500 to-blue-600' : confirmButtonColor === 'green' ? 'from-green-500 to-green-600' : 'from-red-500 to-orange-500'} p-6`}>
               <div className='flex items-center gap-4'>
                 <motion.div
                   initial={{ scale: 0, rotate: -180 }}
@@ -44,7 +64,7 @@ export default function CancelOrderModal({
                   transition={{ delay: 0.2, type: 'spring' }}
                   className='w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30'
                 >
-                  <AlertTriangle className='w-8 h-8 text-white' />
+                  <Icon className='w-8 h-8 text-white' />
                 </motion.div>
                 <div className='text-white'>
                   <h3 className='text-2xl font-bold'>{title}</h3>
@@ -57,7 +77,8 @@ export default function CancelOrderModal({
 
             {/* Content */}
             <div className='p-6'>
-              <p className='text-gray-700 text-lg leading-relaxed'>{message}</p>
+              <p className='text-gray-700 text-lg leading-relaxed mb-4'>{message}</p>
+              {additionalContent}
             </div>
 
             {/* Buttons */}
@@ -74,10 +95,10 @@ export default function CancelOrderModal({
                 onClick={onConfirm}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className='flex-1 px-6 py-3 bg-linear-to-r cursor-pointer from-red-500 to-orange-500 text-white rounded-xl font-semibold shadow-lg hover:from-red-600 hover:to-orange-600 transition-all flex items-center justify-center gap-2'
+                className={`flex-1 px-6 py-3 bg-linear-to-r cursor-pointer ${getButtonColors()} text-white rounded-xl font-semibold shadow-lg transition-all flex items-center justify-center gap-2`}
               >
                 <CheckCircle className='w-5 h-5' />
-                Ναι, Ακύρωση
+                {confirmButtonText}
               </motion.button>
             </div>
           </motion.div>

@@ -12,7 +12,7 @@ import {
 import CustomerCard from './components/CustomerCard';
 import CustomerFormModal from './components/CustomerFormModal';
 import CustomerDetailModal from './components/CustomerDetailModal';
-import ConfirmModal from './components/ConfirmModal';
+import ConfirmModal from '@/components/shared/ConfirmModal';
 
 const containerVariants = {
   hidden: { opacity: 0 },

@@ -10,6 +10,7 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
+  AlertTriangle,
   ChevronDown,
   ChevronUp,
   Edit,
@@ -22,8 +23,7 @@ import {
   updateOrderItemQuantity,
   deleteOrderItem,
 } from '@/lib/actions/orders';
-import CancelOrderModal from './CancelOrderModal';
-import DeleteProductModal from './DeleteProductModal';
+import ConfirmModal from '@/components/shared/ConfirmModal';
 
 interface OrderCardProps {
   order: any;
@@ -33,22 +33,19 @@ interface OrderCardProps {
 export default function OrderCard({ order, onUpdate }: OrderCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showCancelOrderModal, setShowCancelOrderModal] = useState(false);
-  const [editingItemId, setEditingItemId] = useState<string | null>(null);
-  const [tempPaidQuantities, setTempPaidQuantities] = useState<
-    Record<string, number>
-  >({});
-  const [editingQuantityId, setEditingQuantityId] = useState<string | null>(
-    null
-  );
-  const [tempQuantities, setTempQuantities] = useState<Record<string, number>>(
-    {}
-  );
-  const [showDeleteProductModal, setShowDeleteProductModal] = useState(false);
-  const [productToDelete, setProductToDelete] = useState<{
-    id: string;
-    name: string;
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmModalConfig, setConfirmModalConfig] = useState<{
+    title: string;
+    message: string;
+    icon?: any;
+    confirmButtonText?: string;
+    onConfirm: () => void;
+    additionalContent?: any;
   } | null>(null);
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [tempPaidQuantities, setTempPaidQuantities] = useState<Record<string, number>>({});
+  const [editingQuantityId, setEditingQuantityId] = useState<string | null>(null);
+  const [tempQuantities, setTempQuantities] = useState<Record<string, number>>({});
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -120,8 +117,19 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
     handlePaymentUpdate(itemId, tempPaidQuantities[itemId] || 0);
   };
 
+  const openCancelOrderModal = () => {
+    setConfirmModalConfig({
+      title: 'Διαγραφή Παραγγελίας',
+      message: 'Είστε σίγουροι ότι θέλετε να διαγράψετε ολόκληρη την παραγγελία; Η παραγγελία θα αφαιρεθεί οριστικά και το απόθεμα για τα μη πληρωμένα προϊόντα θα επιστραφεί.',
+      icon: AlertTriangle,
+      confirmButtonText: 'Ναι, Ακύρωση',
+      onConfirm: handleCancelOrder,
+    });
+    setShowConfirmModal(true);
+  };
+
   const handleCancelOrder = async () => {
-    setShowCancelOrderModal(false);
+    setShowConfirmModal(false);
     setLoading(true);
     const result = await cancelOrder(order.id);
     setLoading(false);
@@ -164,20 +172,40 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
   };
 
   const handleDeleteItem = async (itemId: string, productName: string) => {
-    setProductToDelete({ id: itemId, name: productName });
-    setShowDeleteProductModal(true);
+    setConfirmModalConfig({
+      title: 'Διαγραφή Προϊόντος',
+      message: `Είστε σίγουροι ότι θέλετε να διαγράψετε το προϊόν "${productName}" από αυτή την παραγγελία;`,
+      icon: Package,
+      confirmButtonText: 'Ναι, Διαγραφή',
+      onConfirm: () => confirmDeleteItem(itemId),
+      additionalContent: (
+        <div className='bg-amber-50 border border-amber-200 rounded-xl p-4'>
+          <div className='flex items-start gap-3'>
+            <div className='w-5 h-5 bg-amber-500 rounded-full flex items-center justify-center mt-0.5'>
+              <span className='text-white text-xs'>⚠️</span>
+            </div>
+            <div>
+              <p className='text-amber-800 text-sm font-medium mb-1'>
+                Σημαντικό:
+              </p>
+              <p className='text-amber-700 text-sm'>
+                Το απόθεμα για τα μη πληρωμένα τεμάχια θα επιστραφεί αυτόματα. Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.
+              </p>
+            </div>
+          </div>
+        </div>
+      ),
+    });
+    setShowConfirmModal(true);
   };
 
-  const confirmDeleteItem = async () => {
-    if (!productToDelete) return;
-
-    setShowDeleteProductModal(false);
+  const confirmDeleteItem = async (itemId: string) => {
+    setShowConfirmModal(false);
     setLoading(true);
-    const result = await deleteOrderItem(order.id, productToDelete.id);
+    const result = await deleteOrderItem(order.id, itemId);
     setLoading(false);
 
     if (result.success) {
-      setProductToDelete(null);
       onUpdate();
     } else {
       alert(result.error || 'Σφάλμα κατά τη διαγραφή του προϊόντος');
@@ -529,7 +557,7 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                   </button>
                 )}
                 <button
-                  onClick={() => setShowCancelOrderModal(true)}
+                  onClick={openCancelOrderModal}
                   disabled={loading}
                   className='flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors disabled:opacity-50'
                 >
@@ -542,25 +570,22 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
         )}
       </motion.div>
 
-      {/* Cancel Order Modal */}
-      <CancelOrderModal
-        isOpen={showCancelOrderModal}
-        onClose={() => setShowCancelOrderModal(false)}
-        onConfirm={handleCancelOrder}
-        title='Διαγραφή Παραγγελίας'
-        message='Είστε σίγουροι ότι θέλετε να διαγράψετε ολόκληρη την παραγγελία; Η παραγγελία θα αφαιρεθεί οριστικά και το απόθεμα για τα μη πληρωμένα προϊόντα θα επιστραφεί.'
-      />
-
-      {/* Delete Product Modal */}
-      <DeleteProductModal
-        isOpen={showDeleteProductModal}
-        onClose={() => {
-          setShowDeleteProductModal(false);
-          setProductToDelete(null);
-        }}
-        onConfirm={confirmDeleteItem}
-        productName={productToDelete?.name || ''}
-      />
+      {/* Confirm Modal */}
+      {confirmModalConfig && (
+        <ConfirmModal
+          isOpen={showConfirmModal}
+          onClose={() => {
+            setShowConfirmModal(false);
+            setConfirmModalConfig(null);
+          }}
+          onConfirm={confirmModalConfig.onConfirm}
+          title={confirmModalConfig.title}
+          message={confirmModalConfig.message}
+          icon={confirmModalConfig.icon}
+          confirmButtonText={confirmModalConfig.confirmButtonText}
+          additionalContent={confirmModalConfig.additionalContent}
+        />
+      )}
     </>
   );
 }

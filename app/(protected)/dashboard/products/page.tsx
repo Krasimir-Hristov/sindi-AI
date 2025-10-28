@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import ProductCard from './components/ProductCard';
 import ProductFormModal from './components/ProductFormModal';
 import ProductDetailModal from './components/ProductDetailModal';
-import ConfirmModal from './components/ConfirmModal';
+import ConfirmModal from '@/components/shared/ConfirmModal';
 import {
   createProduct,
   getProducts,
