@@ -1,7 +1,7 @@
 ﻿'use server';
 
 import { revalidatePath } from 'next/cache';
-import { getServerSupabase } from '@/lib/supabaseServer';
+import { getServerSupabase } from '@/lib/supabase/server';
 
 interface ProductData {
   name: string;
