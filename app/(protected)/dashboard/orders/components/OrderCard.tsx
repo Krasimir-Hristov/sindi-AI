@@ -13,7 +13,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
-import { updateOrderPayment, cancelOrder } from '@/lib/actions/orders';
+import { updateOrderPayment, cancelOrder, payFullOrder } from '@/lib/actions/orders';
 import CancelOrderModal from './CancelOrderModal';
 
 interface OrderCardProps {
@@ -110,6 +110,18 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
       onUpdate();
     } else {
       alert(result.error || 'Σφάλμα κατά την ακύρωση παραγγελίας');
+    }
+  };
+
+  const handlePayFullOrder = async () => {
+    setLoading(true);
+    const result = await payFullOrder(order.id);
+    setLoading(false);
+
+    if (result.success) {
+      onUpdate();
+    } else {
+      alert(result.error || 'Σφάλμα κατά την πληρωμή');
     }
   };
 
@@ -361,7 +373,17 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
 
             {/* Cancel Order Button */}
             {order.status !== 'cancelled' && (
-              <div className='mt-6 flex justify-end'>
+              <div className='mt-6 flex justify-end gap-3'>
+                {order.status !== 'paid' && (
+                  <button
+                    onClick={handlePayFullOrder}
+                    disabled={loading}
+                    className='flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors disabled:opacity-50'
+                  >
+                    <DollarSign className='w-5 h-5' />
+                    Πλήρης Πληρωμή Παραγγελίας
+                  </button>
+                )}
                 <button
                   onClick={() => setShowCancelOrderModal(true)}
                   disabled={loading}

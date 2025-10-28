@@ -331,6 +331,76 @@ export async function updateOrderPayment(
   }
 }
 
+export async function payFullOrder(orderId: string) {
+  try {
+    const supabase = await getServerSupabase();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return { error: 'Μη εξουσιοδοτημένος χρήστης' };
+    }
+
+    // Get order with items
+    const { data: order, error: orderError } = await supabase
+      .from('orders')
+      .select('*, order_items(*)')
+      .eq('id', orderId)
+      .eq('user_id', user.id)
+      .single();
+
+    if (orderError || !order) {
+      return { error: 'Η παραγγελία δεν βρέθηκε' };
+    }
+
+    if (order.status === 'paid') {
+      return { error: 'Η παραγγελία είναι ήδη πλήρως πληρωμένη' };
+    }
+
+    // Mark all items as fully paid
+    for (const item of order.order_items) {
+      const { error: updateError } = await supabase
+        .from('order_items')
+        .update({ paid_quantity: item.quantity })
+        .eq('id', item.id);
+
+      if (updateError) {
+        console.error('Error updating item payment:', updateError);
+        return { error: 'Σφάλμα κατά την ενημέρωση πληρωμής' };
+      }
+    }
+
+    // Calculate total paid amount (all items fully paid)
+    const totalPaid = order.order_items.reduce(
+      (sum: number, item: any) => sum + (item.unit_price * item.quantity),
+      0
+    );
+
+    // Update order status to paid
+    const { error: orderUpdateError } = await supabase
+      .from('orders')
+      .update({
+        paid_amount: totalPaid,
+        status: 'paid',
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', orderId);
+
+    if (orderUpdateError) {
+      console.error('Error updating order:', orderUpdateError);
+      return { error: 'Σφάλμα κατά την ενημέρωση παραγγελίας' };
+    }
+
+    revalidatePath('/dashboard/orders');
+    return { success: true };
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return { error: 'Απροσδόκητο σφάλμα' };
+  }
+}
+
 export async function cancelOrderItem(itemId: string, orderId: string) {
   try {
     const supabase = await getServerSupabase();
