@@ -1,8 +1,7 @@
 ﻿'use server';
 
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
+import { getServerSupabase } from '@/lib/supabaseServer';
 
 interface ProductData {
   name: string;
@@ -16,34 +15,9 @@ interface ProductData {
   is_active?: boolean;
 }
 
-async function getSupabaseClient() {
-  const cookieStore = await cookies();
-
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet: any) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }: any) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // Ignore errors
-          }
-        },
-      },
-    }
-  );
-}
-
 export async function createProduct(productData: ProductData) {
   try {
-    const supabase = await getSupabaseClient();
+    const supabase = await getServerSupabase();
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -65,7 +39,7 @@ export async function createProduct(productData: ProductData) {
 
 export async function getProducts() {
   try {
-    const supabase = await getSupabaseClient();
+    const supabase = await getServerSupabase();
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -89,7 +63,7 @@ export async function updateProduct(
   productData: Partial<ProductData>
 ) {
   try {
-    const supabase = await getSupabaseClient();
+    const supabase = await getServerSupabase();
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -113,7 +87,7 @@ export async function updateProduct(
 
 export async function deleteProduct(id: string) {
   try {
-    const supabase = await getSupabaseClient();
+    const supabase = await getServerSupabase();
     const {
       data: { user },
     } = await supabase.auth.getUser();

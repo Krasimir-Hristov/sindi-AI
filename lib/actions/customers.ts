@@ -1,8 +1,7 @@
 'use server';
 
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
+import { getServerSupabase } from '@/lib/supabaseServer';
 
 interface CustomerData {
   first_name: string;
@@ -15,47 +14,9 @@ interface CustomerData {
   notes?: string;
 }
 
-async function getSupabaseClient() {
-  const cookieStore = await cookies();
-
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet: any) {
-          cookiesToSet.forEach(({ name, value, options }: any) =>
-            cookieStore.set(name, value, options)
-          );
-        },
-      },
-      auth: {
-        storage: {
-          getItem: async (key: string) => {
-            const cookie = cookieStore.get(key);
-            return cookie?.value ?? null;
-          },
-          setItem: async (key: string, value: string) => {
-            cookieStore.set(key, value);
-          },
-          removeItem: async (key: string) => {
-            cookieStore.delete(key);
-          },
-        },
-        storageKey: `sb-${
-          process.env.NEXT_PUBLIC_SUPABASE_URL!.split('//')[1].split('.')[0]
-        }-auth-token`,
-      },
-    }
-  );
-}
-
 export async function createCustomer(customerData: CustomerData) {
   try {
-    const supabase = await getSupabaseClient();
+    const supabase = await getServerSupabase();
 
     const {
       data: { user },
@@ -94,7 +55,7 @@ export async function updateCustomer(
   customerData: Partial<CustomerData>
 ) {
   try {
-    const supabase = await getSupabaseClient();
+    const supabase = await getServerSupabase();
 
     const {
       data: { user },
@@ -127,7 +88,7 @@ export async function updateCustomer(
 
 export async function deleteCustomer(id: string) {
   try {
-    const supabase = await getSupabaseClient();
+    const supabase = await getServerSupabase();
 
     const {
       data: { user },
@@ -158,7 +119,7 @@ export async function deleteCustomer(id: string) {
 
 export async function getCustomers() {
   try {
-    const supabase = await getSupabaseClient();
+    const supabase = await getServerSupabase();
 
     const {
       data: { user },
