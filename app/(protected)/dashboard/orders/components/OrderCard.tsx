@@ -23,6 +23,7 @@ import {
   deleteOrderItem,
 } from '@/lib/actions/orders';
 import CancelOrderModal from './CancelOrderModal';
+import DeleteProductModal from './DeleteProductModal';
 
 interface OrderCardProps {
   order: any;
@@ -43,6 +44,8 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
   const [tempQuantities, setTempQuantities] = useState<Record<string, number>>(
     {}
   );
+  const [showDeleteProductModal, setShowDeleteProductModal] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<{ id: string; name: string } | null>(null);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -157,20 +160,21 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
     }
   };
 
-  const handleDeleteItem = async (itemId: string) => {
-    if (
-      !confirm(
-        'Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το προϊόν από την παραγγελία;'
-      )
-    ) {
-      return;
-    }
+  const handleDeleteItem = async (itemId: string, productName: string) => {
+    setProductToDelete({ id: itemId, name: productName });
+    setShowDeleteProductModal(true);
+  };
 
+  const confirmDeleteItem = async () => {
+    if (!productToDelete) return;
+
+    setShowDeleteProductModal(false);
     setLoading(true);
-    const result = await deleteOrderItem(order.id, itemId);
+    const result = await deleteOrderItem(order.id, productToDelete.id);
     setLoading(false);
 
     if (result.success) {
+      setProductToDelete(null);
       onUpdate();
     } else {
       alert(result.error || 'Σφάλμα κατά τη διαγραφή του προϊόντος');
@@ -309,7 +313,7 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                           <Edit className='w-4 h-4' />
                         </button>
                         <button
-                          onClick={() => handleDeleteItem(item.id)}
+                          onClick={() => handleDeleteItem(item.id, item.product.name)}
                           disabled={loading}
                           className='p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50'
                           title='Διαγραφή Προϊόντος'
@@ -540,6 +544,17 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
         onConfirm={handleCancelOrder}
         title='Διαγραφή Παραγγελίας'
         message='Είστε σίγουροι ότι θέλετε να διαγράψετε ολόκληρη την παραγγελία; Η παραγγελία θα αφαιρεθεί οριστικά και το απόθεμα για τα μη πληρωμένα προϊόντα θα επιστραφεί.'
+      />
+
+      {/* Delete Product Modal */}
+      <DeleteProductModal
+        isOpen={showDeleteProductModal}
+        onClose={() => {
+          setShowDeleteProductModal(false);
+          setProductToDelete(null);
+        }}
+        onConfirm={confirmDeleteItem}
+        productName={productToDelete?.name || ''}
       />
     </>
   );
