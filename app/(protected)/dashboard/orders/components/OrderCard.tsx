@@ -322,7 +322,9 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                           {/* View Mode */}
                           {item.paid_quantity < item.quantity && (
                             <button
-                              onClick={() => handlePaymentUpdate(item.id, item.quantity)}
+                              onClick={() =>
+                                handlePaymentUpdate(item.id, item.quantity)
+                              }
                               disabled={loading}
                               className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-sm font-semibold flex items-center gap-2'
                             >
