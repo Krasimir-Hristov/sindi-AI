@@ -43,9 +43,15 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
     additionalContent?: any;
   } | null>(null);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
-  const [tempPaidQuantities, setTempPaidQuantities] = useState<Record<string, number>>({});
-  const [editingQuantityId, setEditingQuantityId] = useState<string | null>(null);
-  const [tempQuantities, setTempQuantities] = useState<Record<string, number>>({});
+  const [tempPaidQuantities, setTempPaidQuantities] = useState<
+    Record<string, number>
+  >({});
+  const [editingQuantityId, setEditingQuantityId] = useState<string | null>(
+    null
+  );
+  const [tempQuantities, setTempQuantities] = useState<Record<string, number>>(
+    {}
+  );
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -120,7 +126,8 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
   const openCancelOrderModal = () => {
     setConfirmModalConfig({
       title: 'Διαγραφή Παραγγελίας',
-      message: 'Είστε σίγουροι ότι θέλετε να διαγράψετε ολόκληρη την παραγγελία; Η παραγγελία θα αφαιρεθεί οριστικά και το απόθεμα για τα μη πληρωμένα προϊόντα θα επιστραφεί.',
+      message:
+        'Είστε σίγουροι ότι θέλετε να διαγράψετε ολόκληρη την παραγγελία; Η παραγγελία θα αφαιρεθεί οριστικά και το απόθεμα για τα μη πληρωμένα προϊόντα θα επιστραφεί.',
       icon: AlertTriangle,
       confirmButtonText: 'Ναι, Ακύρωση',
       onConfirm: handleCancelOrder,
@@ -189,7 +196,8 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                 Σημαντικό:
               </p>
               <p className='text-amber-700 text-sm'>
-                Το απόθεμα για τα μη πληρωμένα τεμάχια θα επιστραφεί αυτόματα. Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.
+                Το απόθεμα για τα μη πληρωμένα τεμάχια θα επιστραφεί αυτόματα.
+                Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.
               </p>
             </div>
           </div>
