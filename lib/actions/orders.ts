@@ -564,3 +564,211 @@ export async function cancelOrder(orderId: string) {
     return { error: 'Απροσδόκητο σφάλμα' };
   }
 }
+
+export async function updateOrderItemQuantity(
+  orderId: string,
+  itemId: string,
+  newQuantity: number
+) {
+  try {
+    const supabase = await getServerSupabase();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return { error: 'Μη εξουσιοδοτημένος χρήστης' };
+    }
+
+    // Get the current order item
+    const { data: currentItem, error: itemError } = await supabase
+      .from('order_items')
+      .select('quantity, product_id')
+      .eq('id', itemId)
+      .eq('order_id', orderId)
+      .single();
+
+    if (itemError || !currentItem) {
+      return { error: 'Το στοιχείο παραγγελίας δεν βρέθηκε' };
+    }
+
+    const quantityDifference = newQuantity - currentItem.quantity;
+
+    // Update the order item quantity
+    const { error: updateError } = await supabase
+      .from('order_items')
+      .update({ quantity: newQuantity })
+      .eq('id', itemId)
+      .eq('order_id', orderId);
+
+    if (updateError) {
+      return { error: 'Σφάλμα κατά την ενημέρωση της ποσότητας' };
+    }
+
+    // Adjust product stock
+    if (quantityDifference !== 0) {
+      const { error: stockError } = await supabase.rpc('adjust_product_stock', {
+        product_id: currentItem.product_id,
+        quantity_change: -quantityDifference, // Negative because we're returning stock
+      });
+
+      if (stockError) {
+        console.error('Error adjusting stock:', stockError);
+        return { error: 'Σφάλμα κατά την ενημέρωση του αποθέματος' };
+      }
+    }
+
+    // Recalculate order totals
+    await recalculateOrderTotals(orderId);
+
+    revalidatePath('/dashboard/orders');
+    revalidatePath('/dashboard/products');
+    return { success: true };
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return { error: 'Απροσδόκητο σφάλμα' };
+  }
+}
+
+export async function deleteOrderItem(orderId: string, itemId: string) {
+  try {
+    const supabase = await getServerSupabase();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return { error: 'Μη εξουσιοδοτημένος χρήστης' };
+    }
+
+    // Get the current order item to return stock
+    const { data: currentItem, error: itemError } = await supabase
+      .from('order_items')
+      .select('quantity, paid_quantity, product_id')
+      .eq('id', itemId)
+      .eq('order_id', orderId)
+      .single();
+
+    if (itemError || !currentItem) {
+      return { error: 'Το στοιχείο παραγγελίας δεν βρέθηκε' };
+    }
+
+    // Return unpaid stock to product
+    const unpaidQuantity = currentItem.quantity - currentItem.paid_quantity;
+    if (unpaidQuantity > 0) {
+      const { error: stockError } = await supabase.rpc('adjust_product_stock', {
+        product_id: currentItem.product_id,
+        quantity_change: unpaidQuantity,
+      });
+
+      if (stockError) {
+        console.error('Error returning stock:', stockError);
+        return { error: 'Σφάλμα κατά την επιστροφή του αποθέματος' };
+      }
+    }
+
+    // Delete the order item
+    const { error: deleteError } = await supabase
+      .from('order_items')
+      .delete()
+      .eq('id', itemId)
+      .eq('order_id', orderId);
+
+    if (deleteError) {
+      return { error: 'Σφάλμα κατά τη διαγραφή του στοιχείου' };
+    }
+
+    // Check if order has any items left
+    const { data: remainingItems, error: countError } = await supabase
+      .from('order_items')
+      .select('id')
+      .eq('order_id', orderId);
+
+    if (countError) {
+      console.error('Error checking remaining items:', countError);
+    }
+
+    // If no items left, cancel the order
+    if (!remainingItems || remainingItems.length === 0) {
+      const { error: cancelError } = await supabase
+        .from('orders')
+        .update({ status: 'cancelled' })
+        .eq('id', orderId)
+        .eq('user_id', user.id);
+
+      if (cancelError) {
+        console.error('Error cancelling empty order:', cancelError);
+      }
+    } else {
+      // Recalculate order totals
+      await recalculateOrderTotals(orderId);
+    }
+
+    revalidatePath('/dashboard/orders');
+    revalidatePath('/dashboard/products');
+    return { success: true };
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return { error: 'Απροσδόκητο σφάλμα' };
+  }
+}
+
+async function recalculateOrderTotals(orderId: string) {
+  try {
+    const supabase = await getServerSupabase();
+
+    // Get all order items with their current data
+    const { data: items, error: itemsError } = await supabase
+      .from('order_items')
+      .select('unit_price, quantity, paid_quantity')
+      .eq('order_id', orderId);
+
+    if (itemsError) {
+      console.error('Error fetching order items:', itemsError);
+      return;
+    }
+
+    if (!items || items.length === 0) {
+      return;
+    }
+
+    // Calculate new totals
+    let totalAmount = 0;
+    let paidAmount = 0;
+
+    for (const item of items) {
+      const itemTotal = item.unit_price * item.quantity;
+      const itemPaid = item.unit_price * item.paid_quantity;
+      totalAmount += itemTotal;
+      paidAmount += itemPaid;
+    }
+
+    // Determine order status
+    let status = 'pending';
+    if (paidAmount === 0) {
+      status = 'pending';
+    } else if (paidAmount >= totalAmount) {
+      status = 'paid';
+    } else {
+      status = 'partial';
+    }
+
+    // Update order
+    const { error: updateError } = await supabase
+      .from('orders')
+      .update({
+        total_amount: totalAmount,
+        paid_amount: paidAmount,
+        status: status,
+      })
+      .eq('id', orderId);
+
+    if (updateError) {
+      console.error('Error updating order totals:', updateError);
+    }
+  } catch (error) {
+    console.error('Error recalculating order totals:', error);
+  }
+}

@@ -12,11 +12,15 @@ import {
   AlertCircle,
   ChevronDown,
   ChevronUp,
+  Edit,
+  Trash2,
 } from 'lucide-react';
 import {
   updateOrderPayment,
   cancelOrder,
   payFullOrder,
+  updateOrderItemQuantity,
+  deleteOrderItem,
 } from '@/lib/actions/orders';
 import CancelOrderModal from './CancelOrderModal';
 
@@ -33,6 +37,8 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
   const [tempPaidQuantities, setTempPaidQuantities] = useState<
     Record<string, number>
   >({});
+  const [editingQuantityId, setEditingQuantityId] = useState<string | null>(null);
+  const [tempQuantities, setTempQuantities] = useState<Record<string, number>>({});
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -127,6 +133,56 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
     } else {
       alert(result.error || 'Σφάλμα κατά την πληρωμή');
     }
+  };
+
+  const handleQuantityUpdate = async (itemId: string, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      alert('Η ποσότητα πρέπει να είναι μεγαλύτερη από 0');
+      return;
+    }
+
+    setLoading(true);
+    const result = await updateOrderItemQuantity(order.id, itemId, newQuantity);
+    setLoading(false);
+
+    if (result.success) {
+      setEditingQuantityId(null);
+      onUpdate();
+    } else {
+      alert(result.error || 'Σφάλμα κατά την ενημέρωση της ποσότητας');
+    }
+  };
+
+  const handleDeleteItem = async (itemId: string) => {
+    if (!confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το προϊόν από την παραγγελία;')) {
+      return;
+    }
+
+    setLoading(true);
+    const result = await deleteOrderItem(order.id, itemId);
+    setLoading(false);
+
+    if (result.success) {
+      onUpdate();
+    } else {
+      alert(result.error || 'Σφάλμα κατά τη διαγραφή του προϊόντος');
+    }
+  };
+
+  const startEditingQuantity = (itemId: string, currentQuantity: number) => {
+    setEditingQuantityId(itemId);
+    setTempQuantities({
+      ...tempQuantities,
+      [itemId]: currentQuantity,
+    });
+  };
+
+  const cancelQuantityEditing = () => {
+    setEditingQuantityId(null);
+  };
+
+  const saveQuantity = (itemId: string) => {
+    handleQuantityUpdate(itemId, tempQuantities[itemId] || 0);
   };
 
   return (
@@ -230,7 +286,73 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                         </p>
                       </div>
                     </div>
+
+                    {/* Item Actions */}
+                    {order.status !== 'cancelled' && (
+                      <div className='flex gap-2'>
+                        <button
+                          onClick={() => startEditingQuantity(item.id, item.quantity)}
+                          disabled={loading}
+                          className='p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors disabled:opacity-50'
+                          title='Επεξεργασία Ποσότητας'
+                        >
+                          <Edit className='w-4 h-4' />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteItem(item.id)}
+                          disabled={loading}
+                          className='p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50'
+                          title='Διαγραφή Προϊόντος'
+                        >
+                          <Trash2 className='w-4 h-4' />
+                        </button>
+                      </div>
+                    )}
                   </div>
+
+                  {/* Quantity Editing */}
+                  {editingQuantityId === item.id ? (
+                    <div className='mb-3 p-3 bg-blue-50 rounded-lg border border-blue-200'>
+                      <div className='flex items-center gap-3'>
+                        <label className='text-sm font-semibold text-blue-900'>
+                          Ποσότητα:
+                        </label>
+                        <input
+                          type='number'
+                          min='1'
+                          value={tempQuantities[item.id] || item.quantity}
+                          onChange={(e) =>
+                            setTempQuantities({
+                              ...tempQuantities,
+                              [item.id]: parseInt(e.target.value) || 1,
+                            })
+                          }
+                          className='w-20 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center font-semibold'
+                          disabled={loading}
+                        />
+                        <button
+                          onClick={() => saveQuantity(item.id)}
+                          disabled={loading || (tempQuantities[item.id] || item.quantity) <= 0}
+                          className='px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-sm font-semibold'
+                        >
+                          <CheckCircle className='w-4 h-4' />
+                        </button>
+                        <button
+                          onClick={cancelQuantityEditing}
+                          disabled={loading}
+                          className='px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 text-sm font-semibold'
+                        >
+                          <XCircle className='w-4 h-4' />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className='mb-3'>
+                      <p className='text-sm text-gray-600'>
+                        Ποσότητα: <span className='font-semibold'>{item.quantity}</span>
+                      </p>
+                    </div>
+                  )}
 
                   {/* Product Financial Summary */}
                   <div className='grid grid-cols-3 gap-3 mb-3 p-3 bg-gray-50 rounded-lg'>
