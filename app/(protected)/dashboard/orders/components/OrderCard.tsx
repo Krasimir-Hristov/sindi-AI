@@ -37,8 +37,12 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
   const [tempPaidQuantities, setTempPaidQuantities] = useState<
     Record<string, number>
   >({});
-  const [editingQuantityId, setEditingQuantityId] = useState<string | null>(null);
-  const [tempQuantities, setTempQuantities] = useState<Record<string, number>>({});
+  const [editingQuantityId, setEditingQuantityId] = useState<string | null>(
+    null
+  );
+  const [tempQuantities, setTempQuantities] = useState<Record<string, number>>(
+    {}
+  );
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -154,7 +158,11 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
   };
 
   const handleDeleteItem = async (itemId: string) => {
-    if (!confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το προϊόν από την παραγγελία;')) {
+    if (
+      !confirm(
+        'Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το προϊόν από την παραγγελία;'
+      )
+    ) {
       return;
     }
 
@@ -291,7 +299,9 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                     {order.status !== 'cancelled' && (
                       <div className='flex gap-2'>
                         <button
-                          onClick={() => startEditingQuantity(item.id, item.quantity)}
+                          onClick={() =>
+                            startEditingQuantity(item.id, item.quantity)
+                          }
                           disabled={loading}
                           className='p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors disabled:opacity-50'
                           title='Επεξεργασία Ποσότητας'
@@ -332,7 +342,10 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                         />
                         <button
                           onClick={() => saveQuantity(item.id)}
-                          disabled={loading || (tempQuantities[item.id] || item.quantity) <= 0}
+                          disabled={
+                            loading ||
+                            (tempQuantities[item.id] || item.quantity) <= 0
+                          }
                           className='px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-sm font-semibold'
                         >
                           <CheckCircle className='w-4 h-4' />
@@ -349,7 +362,8 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                   ) : (
                     <div className='mb-3'>
                       <p className='text-sm text-gray-600'>
-                        Ποσότητα: <span className='font-semibold'>{item.quantity}</span>
+                        Ποσότητα:{' '}
+                        <span className='font-semibold'>{item.quantity}</span>
                       </p>
                     </div>
                   )}
