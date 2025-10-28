@@ -25,6 +25,8 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showCancelOrderModal, setShowCancelOrderModal] = useState(false);
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [tempPaidQuantity, setTempPaidQuantity] = useState<number>(0);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -73,10 +75,25 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
     setLoading(false);
 
     if (result.success) {
+      setEditingItemId(null);
       onUpdate();
     } else {
       alert(result.error || 'Σφάλμα κατά την ενημέρωση');
     }
+  };
+
+  const startEditing = (itemId: string, currentPaidQuantity: number) => {
+    setEditingItemId(itemId);
+    setTempPaidQuantity(currentPaidQuantity);
+  };
+
+  const cancelEditing = () => {
+    setEditingItemId(null);
+    setTempPaidQuantity(0);
+  };
+
+  const savePayment = (itemId: string) => {
+    handlePaymentUpdate(itemId, tempPaidQuantity);
   };
 
   const handleCancelOrder = async () => {
@@ -224,32 +241,59 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                     </div>
 
                     {/* Payment Actions */}
-                    {item.paid_quantity < item.quantity &&
-                      order.status !== 'cancelled' && (
-                        <div className='flex gap-2'>
-                          <button
-                            onClick={() =>
-                              handlePaymentUpdate(
-                                item.id,
-                                item.paid_quantity + 1
-                              )
-                            }
-                            disabled={loading}
-                            className='px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors disabled:opacity-50 text-sm font-semibold'
-                          >
-                            Πληρωμή +1
-                          </button>
-                          <button
-                            onClick={() =>
-                              handlePaymentUpdate(item.id, item.quantity)
-                            }
-                            disabled={loading}
-                            className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-sm font-semibold'
-                          >
-                            Πληρωμή Όλων
-                          </button>
-                        </div>
-                      )}
+                    {order.status !== 'cancelled' && (
+                      <div className='flex gap-2 items-center'>
+                        {editingItemId === item.id ? (
+                          <>
+                            {/* Edit Mode */}
+                            <input
+                              type='number'
+                              min='0'
+                              max={item.quantity}
+                              value={tempPaidQuantity}
+                              onChange={(e) =>
+                                setTempPaidQuantity(
+                                  parseInt(e.target.value) || 0
+                                )
+                              }
+                              className='w-20 px-3 py-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-center font-semibold'
+                              disabled={loading}
+                            />
+                            <button
+                              onClick={() => savePayment(item.id)}
+                              disabled={
+                                loading ||
+                                tempPaidQuantity < 0 ||
+                                tempPaidQuantity > item.quantity
+                              }
+                              className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-sm font-semibold'
+                            >
+                              <CheckCircle className='w-4 h-4' />
+                            </button>
+                            <button
+                              onClick={cancelEditing}
+                              disabled={loading}
+                              className='px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 text-sm font-semibold'
+                            >
+                              <XCircle className='w-4 h-4' />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            {/* View Mode */}
+                            <button
+                              onClick={() =>
+                                startEditing(item.id, item.paid_quantity)
+                              }
+                              disabled={loading}
+                              className='px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors disabled:opacity-50 text-sm font-semibold'
+                            >
+                              Επεξεργασία Πληρωμής
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
