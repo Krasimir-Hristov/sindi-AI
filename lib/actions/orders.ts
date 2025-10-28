@@ -96,10 +96,13 @@ export async function createOrder(
       }
 
       // Update product stock
-      const { error: stockError } = await supabase.rpc('decrease_product_stock', {
-        p_product_id: item.product_id,
-        p_quantity: item.quantity,
-      });
+      const { error: stockError } = await supabase.rpc(
+        'decrease_product_stock',
+        {
+          p_product_id: item.product_id,
+          p_quantity: item.quantity,
+        }
+      );
 
       if (stockError) {
         console.error('Error updating stock:', stockError);
@@ -270,10 +273,13 @@ export async function cancelOrderItem(itemId: string, orderId: string) {
 
     if (unpaidQuantity > 0) {
       // Return stock for unpaid items
-      const { error: stockError } = await supabase.rpc('increase_product_stock', {
-        p_product_id: item.product_id,
-        p_quantity: unpaidQuantity,
-      });
+      const { error: stockError } = await supabase.rpc(
+        'increase_product_stock',
+        {
+          p_product_id: item.product_id,
+          p_quantity: unpaidQuantity,
+        }
+      );
 
       if (stockError) {
         console.error('Error updating stock:', stockError);
