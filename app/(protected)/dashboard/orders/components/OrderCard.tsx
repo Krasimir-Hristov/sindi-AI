@@ -45,7 +45,10 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
     {}
   );
   const [showDeleteProductModal, setShowDeleteProductModal] = useState(false);
-  const [productToDelete, setProductToDelete] = useState<{ id: string; name: string } | null>(null);
+  const [productToDelete, setProductToDelete] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -313,7 +316,9 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                           <Edit className='w-4 h-4' />
                         </button>
                         <button
-                          onClick={() => handleDeleteItem(item.id, item.product.name)}
+                          onClick={() =>
+                            handleDeleteItem(item.id, item.product.name)
+                          }
                           disabled={loading}
                           className='p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50'
                           title='Διαγραφή Προϊόντος'
