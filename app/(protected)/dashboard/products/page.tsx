@@ -36,7 +36,6 @@ interface Product {
   id: string;
   name: string;
   description?: string;
-  sku?: string;
   category?: string;
   unit_price: number;
   stock_quantity: number;
@@ -109,7 +108,6 @@ export default function ProductsPage() {
   const handleSubmit = async (formData: {
     name: string;
     description: string;
-    sku: string;
     category: string;
     unit_price: string;
     stock_quantity: string;
@@ -122,7 +120,6 @@ export default function ProductsPage() {
     const productData = {
       name: formData.name,
       description: formData.description || undefined,
-      sku: formData.sku || undefined,
       category: formData.category || undefined,
       unit_price: parseFloat(formData.unit_price) || 0,
       stock_quantity: parseInt(formData.stock_quantity) || 0,
@@ -155,7 +152,6 @@ export default function ProductsPage() {
   const filteredProducts = products.filter(
     (product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.sku?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.category?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 

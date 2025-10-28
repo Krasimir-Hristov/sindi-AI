@@ -6,7 +6,6 @@ import { getServerSupabase } from '@/lib/supabase/server';
 interface ProductData {
   name: string;
   description?: string;
-  sku?: string;
   category?: string;
   unit_price: number;
   stock_quantity: number;

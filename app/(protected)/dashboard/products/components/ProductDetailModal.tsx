@@ -16,7 +16,6 @@ interface Product {
   id: string;
   name: string;
   description?: string;
-  sku?: string;
   category?: string;
   unit_price: number;
   stock_quantity: number;
@@ -107,11 +106,6 @@ export default function ProductDetailModal({
                 <h2 className='text-4xl font-bold text-white mb-2'>
                   {product.name}
                 </h2>
-                {product.sku && (
-                  <p className='text-white/80 font-mono text-sm'>
-                    SKU: {product.sku}
-                  </p>
-                )}
               </div>
             </div>
 

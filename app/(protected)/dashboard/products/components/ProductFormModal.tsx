@@ -8,7 +8,7 @@ interface Product {
   id: string;
   name: string;
   description?: string;
-  sku?: string;
+  // sku removed
   category?: string;
   unit_price: number;
   stock_quantity: number;
@@ -23,7 +23,6 @@ interface ProductFormModalProps {
   onSubmit: (formData: {
     name: string;
     description: string;
-    sku: string;
     category: string;
     unit_price: string;
     stock_quantity: string;
@@ -45,7 +44,6 @@ export default function ProductFormModal({
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    sku: '',
     category: '',
     unit_price: '0',
     stock_quantity: '0',
@@ -59,7 +57,6 @@ export default function ProductFormModal({
       setFormData({
         name: product.name,
         description: product.description || '',
-        sku: product.sku || '',
         category: product.category || '',
         unit_price: product.unit_price.toString(),
         stock_quantity: product.stock_quantity.toString(),
@@ -71,7 +68,6 @@ export default function ProductFormModal({
       setFormData({
         name: '',
         description: '',
-        sku: '',
         category: '',
         unit_price: '0',
         stock_quantity: '0',
@@ -148,20 +144,7 @@ export default function ProductFormModal({
                   />
                 </div>
 
-                <div>
-                  <label className='block text-sm font-semibold text-gray-700 mb-2'>
-                    SKU
-                  </label>
-                  <input
-                    type='text'
-                    value={formData.sku}
-                    onChange={(e) =>
-                      setFormData({ ...formData, sku: e.target.value })
-                    }
-                    className='w-full px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 outline-none transition-all'
-                    placeholder='π.χ. DRESS-001'
-                  />
-                </div>
+                {/* SKU field removed */}
 
                 <div>
                   <label className='block text-sm font-semibold text-gray-700 mb-2'>

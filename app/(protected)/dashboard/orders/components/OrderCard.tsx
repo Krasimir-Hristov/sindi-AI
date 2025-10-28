@@ -228,11 +228,6 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                         <p className='font-semibold text-gray-900'>
                           {item.product.name}
                         </p>
-                        {item.product.sku && (
-                          <p className='text-sm text-gray-500'>
-                            SKU: {item.product.sku}
-                          </p>
-                        )}
                       </div>
                     </div>
                   </div>

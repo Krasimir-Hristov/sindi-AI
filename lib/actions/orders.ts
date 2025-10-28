@@ -216,7 +216,7 @@ export async function getOrders() {
           quantity,
           unit_price,
           paid_quantity,
-          product:products(id, name, sku)
+          product:products(id, name)
         )
       `
       )

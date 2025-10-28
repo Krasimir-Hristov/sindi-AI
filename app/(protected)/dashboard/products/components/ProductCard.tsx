@@ -7,7 +7,6 @@ interface Product {
   id: string;
   name: string;
   description?: string;
-  sku?: string;
   category?: string;
   unit_price: number;
   stock_quantity: number;
@@ -71,11 +70,6 @@ export default function ProductCard({
             <h3 className='text-xl font-bold text-gray-900 mb-1 group-hover:text-purple-600 transition-colors'>
               {product.name}
             </h3>
-            {product.sku && (
-              <p className='text-xs text-gray-500 font-mono'>
-                SKU: {product.sku}
-              </p>
-            )}
           </div>
         </div>
 
