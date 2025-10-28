@@ -29,6 +29,75 @@ export async function createOrder(
       return { error: 'Μη εξουσιοδοτημένος χρήστης' };
     }
 
+    // Prepare items with prices for the SQL function
+    const itemsWithPrices = [];
+    
+    for (const item of items) {
+      const { data: product, error: productError } = await supabase
+        .from('products')
+        .select('id, unit_price')
+        .eq('id', item.product_id)
+        .eq('user_id', user.id)
+        .single();
+
+      if (productError || !product) {
+        return { error: `Το προϊόν δεν βρέθηκε` };
+      }
+
+      itemsWithPrices.push({
+        product_id: item.product_id,
+        quantity: item.quantity,
+        unit_price: product.unit_price,
+      });
+    }
+
+    // Call the SQL function to create or update order
+    const { data, error } = await supabase.rpc('add_items_to_open_order_or_create', {
+      p_user_id: user.id,
+      p_client_id: clientId,
+      p_items: itemsWithPrices,
+      p_notes: notes || null,
+    });
+
+    if (error) {
+      return { error: error.message };
+    }
+
+    const result = data?.[0];
+    
+    if (!result?.success) {
+      return { error: result?.message || 'Σφάλμα κατά τη δημιουργία παραγγελίας' };
+    }
+
+    revalidatePath('/dashboard/orders');
+    return { 
+      success: true, 
+      orderId: result.order_id,
+      message: result.message 
+    };
+  } catch (error: any) {
+    console.error('Error creating order:', error);
+    return { error: error.message || 'Σφάλμα κατά τη δημιουργία παραγγελίας' };
+  }
+}
+
+// Legacy code kept for reference - can be removed later
+export async function createOrder_OLD(
+  clientId: string,
+  items: OrderItemInput[],
+  notes?: string
+) {
+  try {
+    const supabase = await getServerSupabase();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return { error: 'Μη εξουσιοδοτημένος χρήστης' };
+    }
+
     // Validate items and check stock
     let totalAmount = 0;
     const validatedItems = [];
@@ -189,9 +258,6 @@ export async function updateOrderPayment(
     }
 
     // Update paid quantities for each item
-    let totalPaid = 0;
-    let totalAmount = 0;
-
     for (const payment of payments) {
       const item = order.order_items.find((i: any) => i.id === payment.item_id);
       if (!item) continue;
@@ -209,8 +275,23 @@ export async function updateOrderPayment(
         console.error('Error updating payment:', updateError);
         return { error: 'Σφάλμα κατά την ενημέρωση πληρωμής' };
       }
+    }
 
-      totalPaid += item.unit_price * payment.paid_quantity;
+    // Recalculate totals for ALL items in the order
+    const { data: updatedItems, error: itemsError } = await supabase
+      .from('order_items')
+      .select('*')
+      .eq('order_id', orderId);
+
+    if (itemsError || !updatedItems) {
+      return { error: 'Σφάλμα κατά την ανάκτηση στοιχείων' };
+    }
+
+    let totalPaid = 0;
+    let totalAmount = 0;
+
+    for (const item of updatedItems) {
+      totalPaid += item.unit_price * item.paid_quantity;
       totalAmount += item.unit_price * item.quantity;
     }
 

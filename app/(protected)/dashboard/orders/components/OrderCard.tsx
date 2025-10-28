@@ -26,7 +26,7 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
   const [loading, setLoading] = useState(false);
   const [showCancelOrderModal, setShowCancelOrderModal] = useState(false);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
-  const [tempPaidQuantity, setTempPaidQuantity] = useState<number>(0);
+  const [tempPaidQuantities, setTempPaidQuantities] = useState<Record<string, number>>({});
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -84,16 +84,15 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
 
   const startEditing = (itemId: string, currentPaidQuantity: number) => {
     setEditingItemId(itemId);
-    setTempPaidQuantity(currentPaidQuantity);
+    setTempPaidQuantities({ ...tempPaidQuantities, [itemId]: currentPaidQuantity });
   };
 
   const cancelEditing = () => {
     setEditingItemId(null);
-    setTempPaidQuantity(0);
   };
 
   const savePayment = (itemId: string) => {
-    handlePaymentUpdate(itemId, tempPaidQuantity);
+    handlePaymentUpdate(itemId, tempPaidQuantities[itemId] || 0);
   };
 
   const handleCancelOrder = async () => {
@@ -215,94 +214,116 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                         )}
                       </div>
                     </div>
-                    <div className='text-right'>
-                      <p className='text-sm text-gray-500'>
-                        €{item.unit_price.toFixed(2)} × {item.quantity}
-                      </p>
+                  </div>
+
+                  {/* Product Financial Summary */}
+                  <div className='grid grid-cols-3 gap-3 mb-3 p-3 bg-gray-50 rounded-lg'>
+                    <div className='text-center'>
+                      <p className='text-xs text-gray-500 mb-1'>Σύνολο</p>
                       <p className='font-semibold text-gray-900'>
                         €{(item.unit_price * item.quantity).toFixed(2)}
                       </p>
+                      <p className='text-xs text-gray-400'>
+                        €{item.unit_price.toFixed(2)} × {item.quantity}
+                      </p>
+                    </div>
+                    <div className='text-center'>
+                      <p className='text-xs text-gray-500 mb-1'>Πληρωμένο</p>
+                      <p className='font-semibold text-green-600'>
+                        €{(item.unit_price * item.paid_quantity).toFixed(2)}
+                      </p>
+                      <p className='text-xs text-gray-400'>
+                        {item.paid_quantity} τεμ.
+                      </p>
+                    </div>
+                    <div className='text-center'>
+                      <p className='text-xs text-gray-500 mb-1'>Υπόλοιπο</p>
+                      <p className='font-semibold text-orange-600'>
+                        €{(item.unit_price * (item.quantity - item.paid_quantity)).toFixed(2)}
+                      </p>
+                      <p className='text-xs text-gray-400'>
+                        {item.quantity - item.paid_quantity} τεμ.
+                      </p>
                     </div>
                   </div>
 
-                  {/* Payment Status */}
-                  <div className='flex items-center gap-4'>
-                    <div className='flex-1'>
-                      <div className='flex items-center gap-2 mb-2'>
-                        <span className='text-sm text-gray-600'>
-                          Πληρωμένα:
-                        </span>
-                        <span className='font-semibold text-green-600'>
-                          {item.paid_quantity} / {item.quantity}
-                        </span>
-                      </div>
-                      <div className='w-full bg-gray-200 rounded-full h-2'>
-                        <div
-                          className='bg-green-500 h-2 rounded-full transition-all'
-                          style={{
-                            width: `${
-                              (item.paid_quantity / item.quantity) * 100
-                            }%`,
-                          }}
-                        />
-                      </div>
+                  {/* Payment Progress Bar */}
+                  <div className='mb-3'>
+                    <div className='flex items-center justify-between mb-2'>
+                      <span className='text-sm text-gray-600'>
+                        Πρόοδος Πληρωμής:
+                      </span>
+                      <span className='font-semibold text-purple-600'>
+                        {item.paid_quantity} / {item.quantity}
+                      </span>
                     </div>
-
-                    {/* Payment Actions */}
-                    {order.status !== 'cancelled' && (
-                      <div className='flex gap-2 items-center'>
-                        {editingItemId === item.id ? (
-                          <>
-                            {/* Edit Mode */}
-                            <input
-                              type='number'
-                              min='0'
-                              max={item.quantity}
-                              value={tempPaidQuantity}
-                              onChange={(e) =>
-                                setTempPaidQuantity(
-                                  parseInt(e.target.value) || 0
-                                )
-                              }
-                              className='w-20 px-3 py-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-center font-semibold'
-                              disabled={loading}
-                            />
-                            <button
-                              onClick={() => savePayment(item.id)}
-                              disabled={
-                                loading ||
-                                tempPaidQuantity < 0 ||
-                                tempPaidQuantity > item.quantity
-                              }
-                              className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-sm font-semibold'
-                            >
-                              <CheckCircle className='w-4 h-4' />
-                            </button>
-                            <button
-                              onClick={cancelEditing}
-                              disabled={loading}
-                              className='px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 text-sm font-semibold'
-                            >
-                              <XCircle className='w-4 h-4' />
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            {/* View Mode */}
-                            <button
-                              onClick={() =>
-                                startEditing(item.id, item.paid_quantity)
-                              }
-                              disabled={loading}
-                              className='px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors disabled:opacity-50 text-sm font-semibold'
-                            >
-                              Επεξεργασία Πληρωμής
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    )}
+                    <div className='w-full bg-gray-200 rounded-full h-2'>
+                      <div
+                        className='bg-green-500 h-2 rounded-full transition-all'
+                        style={{
+                          width: `${
+                            (item.paid_quantity / item.quantity) * 100
+                          }%`,
+                        }}
+                      />
+                    </div>
                   </div>
+
+                  {/* Payment Actions */}
+                  {order.status !== 'cancelled' && (
+                    <div className='flex gap-2 items-center justify-end'>
+                      {editingItemId === item.id ? (
+                        <>
+                          {/* Edit Mode */}
+                          <input
+                            type='number'
+                            min='0'
+                            max={item.quantity}
+                            value={tempPaidQuantities[item.id] || 0}
+                            onChange={(e) =>
+                              setTempPaidQuantities({
+                                ...tempPaidQuantities,
+                                [item.id]: parseInt(e.target.value) || 0
+                              })
+                            }
+                            className='w-20 px-3 py-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-center font-semibold'
+                            disabled={loading}
+                          />
+                          <button
+                            onClick={() => savePayment(item.id)}
+                            disabled={
+                              loading ||
+                              (tempPaidQuantities[item.id] || 0) < 0 ||
+                              (tempPaidQuantities[item.id] || 0) > item.quantity
+                            }
+                            className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-sm font-semibold'
+                          >
+                            <CheckCircle className='w-4 h-4' />
+                          </button>
+                          <button
+                            onClick={cancelEditing}
+                            disabled={loading}
+                            className='px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 text-sm font-semibold'
+                          >
+                            <XCircle className='w-4 h-4' />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          {/* View Mode */}
+                          <button
+                            onClick={() =>
+                              startEditing(item.id, item.paid_quantity)
+                            }
+                            disabled={loading}
+                            className='px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors disabled:opacity-50 text-sm font-semibold'
+                          >
+                            Επεξεργασία Πληρωμής
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
