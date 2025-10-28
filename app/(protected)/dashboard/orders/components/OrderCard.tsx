@@ -320,6 +320,16 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                       ) : (
                         <>
                           {/* View Mode */}
+                          {item.paid_quantity < item.quantity && (
+                            <button
+                              onClick={() => handlePaymentUpdate(item.id, item.quantity)}
+                              disabled={loading}
+                              className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-sm font-semibold flex items-center gap-2'
+                            >
+                              <DollarSign className='w-4 h-4' />
+                              Πλήρης Πληρωμή
+                            </button>
+                          )}
                           <button
                             onClick={() =>
                               startEditing(item.id, item.paid_quantity)
