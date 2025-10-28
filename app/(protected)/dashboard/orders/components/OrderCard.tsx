@@ -154,6 +154,14 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                   </p>
                 </div>
 
+                {/* Remaining Amount */}
+                <div className='text-right'>
+                  <p className='text-sm text-gray-500'>Υπόλοιπο</p>
+                  <p className='font-semibold text-orange-600'>
+                    €{(order.total_amount - order.paid_amount).toFixed(2)}
+                  </p>
+                </div>
+
                 {/* Status */}
                 <div
                   className={`px-4 py-2 rounded-lg border ${getStatusColor(
