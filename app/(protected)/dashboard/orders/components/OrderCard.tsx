@@ -26,7 +26,9 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
   const [loading, setLoading] = useState(false);
   const [showCancelOrderModal, setShowCancelOrderModal] = useState(false);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
-  const [tempPaidQuantities, setTempPaidQuantities] = useState<Record<string, number>>({});
+  const [tempPaidQuantities, setTempPaidQuantities] = useState<
+    Record<string, number>
+  >({});
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -84,7 +86,10 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
 
   const startEditing = (itemId: string, currentPaidQuantity: number) => {
     setEditingItemId(itemId);
-    setTempPaidQuantities({ ...tempPaidQuantities, [itemId]: currentPaidQuantity });
+    setTempPaidQuantities({
+      ...tempPaidQuantities,
+      [itemId]: currentPaidQuantity,
+    });
   };
 
   const cancelEditing = () => {
@@ -239,7 +244,11 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                     <div className='text-center'>
                       <p className='text-xs text-gray-500 mb-1'>Υπόλοιπο</p>
                       <p className='font-semibold text-orange-600'>
-                        €{(item.unit_price * (item.quantity - item.paid_quantity)).toFixed(2)}
+                        €
+                        {(
+                          item.unit_price *
+                          (item.quantity - item.paid_quantity)
+                        ).toFixed(2)}
                       </p>
                       <p className='text-xs text-gray-400'>
                         {item.quantity - item.paid_quantity} τεμ.
@@ -283,7 +292,7 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                             onChange={(e) =>
                               setTempPaidQuantities({
                                 ...tempPaidQuantities,
-                                [item.id]: parseInt(e.target.value) || 0
+                                [item.id]: parseInt(e.target.value) || 0,
                               })
                             }
                             className='w-20 px-3 py-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-center font-semibold'

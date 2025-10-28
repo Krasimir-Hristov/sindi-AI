@@ -31,7 +31,7 @@ export async function createOrder(
 
     // Prepare items with prices for the SQL function
     const itemsWithPrices = [];
-    
+
     for (const item of items) {
       const { data: product, error: productError } = await supabase
         .from('products')
@@ -52,28 +52,33 @@ export async function createOrder(
     }
 
     // Call the SQL function to create or update order
-    const { data, error } = await supabase.rpc('add_items_to_open_order_or_create', {
-      p_user_id: user.id,
-      p_client_id: clientId,
-      p_items: itemsWithPrices,
-      p_notes: notes || null,
-    });
+    const { data, error } = await supabase.rpc(
+      'add_items_to_open_order_or_create',
+      {
+        p_user_id: user.id,
+        p_client_id: clientId,
+        p_items: itemsWithPrices,
+        p_notes: notes || null,
+      }
+    );
 
     if (error) {
       return { error: error.message };
     }
 
     const result = data?.[0];
-    
+
     if (!result?.success) {
-      return { error: result?.message || 'Σφάλμα κατά τη δημιουργία παραγγελίας' };
+      return {
+        error: result?.message || 'Σφάλμα κατά τη δημιουργία παραγγελίας',
+      };
     }
 
     revalidatePath('/dashboard/orders');
-    return { 
-      success: true, 
+    return {
+      success: true,
       orderId: result.order_id,
-      message: result.message 
+      message: result.message,
     };
   } catch (error: any) {
     console.error('Error creating order:', error);
