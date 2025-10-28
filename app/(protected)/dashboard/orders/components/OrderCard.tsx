@@ -13,7 +13,11 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
-import { updateOrderPayment, cancelOrder, payFullOrder } from '@/lib/actions/orders';
+import {
+  updateOrderPayment,
+  cancelOrder,
+  payFullOrder,
+} from '@/lib/actions/orders';
 import CancelOrderModal from './CancelOrderModal';
 
 interface OrderCardProps {

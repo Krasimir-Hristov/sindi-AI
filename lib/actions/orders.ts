@@ -374,7 +374,7 @@ export async function payFullOrder(orderId: string) {
 
     // Calculate total paid amount (all items fully paid)
     const totalPaid = order.order_items.reduce(
-      (sum: number, item: any) => sum + (item.unit_price * item.quantity),
+      (sum: number, item: any) => sum + item.unit_price * item.quantity,
       0
     );
 
