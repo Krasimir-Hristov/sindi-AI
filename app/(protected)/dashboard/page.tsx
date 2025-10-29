@@ -50,6 +50,13 @@ export default function DashboardPage() {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [showOrderModal, setShowOrderModal] = useState(false);
 
+  // Auto-close modal when selectedOrder becomes null
+  useEffect(() => {
+    if (!selectedOrder && showOrderModal) {
+      setShowOrderModal(false);
+    }
+  }, [selectedOrder, showOrderModal]);
+
   const handleOrderClick = (order: any) => {
     setSelectedOrder(order);
     setShowOrderModal(true);
@@ -66,10 +73,10 @@ export default function DashboardPage() {
         const updatedOrder = data?.recentOrders.find(
           (order) => order.id === selectedOrder.id
         );
+
         if (!updatedOrder || updatedOrder.status === 'cancelled') {
           // Order was deleted or cancelled, close the modal
-          setShowOrderModal(false);
-          setSelectedOrder(null);
+          setSelectedOrder(null); // This will trigger the useEffect to close modal
         } else {
           // Update the selected order with fresh data
           setSelectedOrder(updatedOrder);
