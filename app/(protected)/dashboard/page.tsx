@@ -278,6 +278,10 @@ export default function DashboardPage() {
               minute: '2-digit',
             });
 
+            // Get order summary
+            const totalItems = order.order_items?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0;
+            const orderSummary = `${totalItems} προϊόν${totalItems === 1 ? '' : 'α'}`;
+
             return (
               <motion.div
                 key={order.id}
@@ -297,7 +301,7 @@ export default function DashboardPage() {
                       {customerName}
                     </p>
                     <p className='text-sm text-gray-600'>
-                      #{order.id} • {timeAgo}
+                      {orderSummary} • {timeAgo}
                     </p>
                   </div>
                 </div>
