@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Plus } from 'lucide-react';
+import { Users, Plus, Search } from 'lucide-react';
 import {
   createCustomer,
   getCustomers,
@@ -49,6 +49,7 @@ interface Customer {
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -81,6 +82,16 @@ export default function CustomersPage() {
     }
     setLoading(false);
   };
+
+  const filteredCustomers = customers.filter(
+    (customer) =>
+      `${customer.first_name} ${customer.last_name}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      customer.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.city?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   useEffect(() => {
     loadCustomers();
@@ -226,6 +237,22 @@ export default function CustomersPage() {
         </div>
       </motion.div>
 
+      {/* Search Bar */}
+      {customers.length > 0 && (
+        <motion.div variants={itemVariants} className='max-w-md'>
+          <div className='relative'>
+            <Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5' />
+            <input
+              type='text'
+              placeholder='Αναζήτηση πελατών...'
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className='w-full pl-12 pr-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 outline-none transition-all bg-white'
+            />
+          </div>
+        </motion.div>
+      )}
+
       {customers.length === 0 ? (
         <motion.div
           variants={itemVariants}
@@ -248,9 +275,28 @@ export default function CustomersPage() {
             Προσθήκη Πελάτη
           </motion.button>
         </motion.div>
+      ) : filteredCustomers.length === 0 && searchTerm !== '' ? (
+        <motion.div
+          variants={itemVariants}
+          className='bg-white rounded-2xl shadow-lg p-12 border border-purple-100 text-center'
+        >
+          <Search className='w-16 h-16 text-gray-300 mx-auto mb-4' />
+          <h3 className='text-xl font-semibold text-gray-600 mb-2'>
+            Δεν βρέθηκαν πελάτες
+          </h3>
+          <p className='text-gray-500 mb-6'>
+            Δεν υπάρχουν πελάτες που να ταιριάζουν με "{searchTerm}"
+          </p>
+          <button
+            onClick={() => setSearchTerm('')}
+            className='inline-flex items-center gap-2 px-6 py-3 bg-purple-100 text-purple-700 rounded-xl font-medium hover:bg-purple-200 transition-colors'
+          >
+            Εκκαθάριση αναζήτησης
+          </button>
+        </motion.div>
       ) : (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-          {customers.map((customer, index) => (
+          {filteredCustomers.map((customer, index) => (
             <CustomerCard
               key={customer.id}
               customer={customer}
