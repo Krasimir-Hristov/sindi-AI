@@ -797,21 +797,29 @@ export async function getDashboardData() {
     }
 
     // Calculate stats
-    const totalSales = orders?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
-    const totalPaid = orders?.reduce((sum, order) => sum + (order.paid_amount || 0), 0) || 0;
+    const totalSales =
+      orders?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
+    const totalPaid =
+      orders?.reduce((sum, order) => sum + (order.paid_amount || 0), 0) || 0;
     const totalOrders = orders?.length || 0;
 
     // Count orders by status
-    const completedOrders = orders?.filter(order => order.status === 'paid').length || 0;
-    const pendingOrders = orders?.filter(order => order.status === 'partial' || order.status === 'pending').length || 0;
+    const completedOrders =
+      orders?.filter((order) => order.status === 'paid').length || 0;
+    const pendingOrders =
+      orders?.filter(
+        (order) => order.status === 'partial' || order.status === 'pending'
+      ).length || 0;
 
     // Calculate completion rate
-    const completionRate = totalOrders > 0 ? Math.round((completedOrders / totalOrders) * 100) : 0;
+    const completionRate =
+      totalOrders > 0 ? Math.round((completedOrders / totalOrders) * 100) : 0;
 
     // Get recent orders (last 5)
     const { data: recentOrders, error: recentError } = await supabase
       .from('orders')
-      .select(`
+      .select(
+        `
         id,
         total_amount,
         paid_amount,
@@ -826,7 +834,8 @@ export async function getDashboardData() {
           paid_quantity,
           product:products(id, name)
         )
-      `)
+      `
+      )
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .limit(5);

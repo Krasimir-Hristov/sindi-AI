@@ -63,7 +63,9 @@ export default function DashboardPage() {
 
       // Check if the selected order still exists or was cancelled
       if (selectedOrder) {
-        const updatedOrder = data?.recentOrders.find(order => order.id === selectedOrder.id);
+        const updatedOrder = data?.recentOrders.find(
+          (order) => order.id === selectedOrder.id
+        );
         if (!updatedOrder || updatedOrder.status === 'cancelled') {
           // Order was deleted or cancelled, close the modal
           setShowOrderModal(false);
@@ -94,16 +96,16 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+      <div className='flex items-center justify-center min-h-[400px]'>
+        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600'></div>
       </div>
     );
   }
 
   if (!dashboardData) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-gray-500">Не можаха да се заредят данните</p>
+      <div className='flex items-center justify-center min-h-[400px]'>
+        <p className='text-gray-500'>Не можаха да се заредят данните</p>
       </div>
     );
   }
@@ -114,7 +116,12 @@ export default function DashboardPage() {
     {
       title: 'Συνολικές Πωλήσεις',
       value: `€${stats.totalSales.toFixed(2)}`,
-      change: stats.totalOrders > 0 ? `+${Math.round((stats.totalSales / stats.totalOrders) * 100) / 100}%` : '+0%',
+      change:
+        stats.totalOrders > 0
+          ? `+${
+              Math.round((stats.totalSales / stats.totalOrders) * 100) / 100
+            }%`
+          : '+0%',
       icon: DollarSign,
       color: 'from-pink-500 to-rose-500',
     },
@@ -159,8 +166,7 @@ export default function DashboardPage() {
             <p className='text-gray-600 text-lg'>
               {stats.pendingOrders > 0
                 ? `Έχεις ${stats.pendingOrders} νέες παραγγελίες που περιμένουν σήμερα`
-                : 'Όλες οι παραγγελίες σου είναι ενημερωμένες'
-              }
+                : 'Όλες οι παραγγελίες σου είναι ενημερωμένες'}
             </p>
           </div>
           <motion.div
@@ -254,7 +260,10 @@ export default function DashboardPage() {
 
             const statusInfo = getStatusInfo(order.status);
             const StatusIcon = statusInfo.icon;
-            const customerName = `${order.client?.first_name || ''} ${order.client?.last_name || ''}`.trim() || 'Άγνωστος Πελάτης';
+            const customerName =
+              `${order.client?.first_name || ''} ${
+                order.client?.last_name || ''
+              }`.trim() || 'Άγνωστος Πελάτης';
             const timeAgo = new Date(order.created_at).toLocaleString('el-GR', {
               day: 'numeric',
               month: 'short',
@@ -290,7 +299,9 @@ export default function DashboardPage() {
                   <p className='font-bold text-gray-900 text-lg'>
                     €{order.total_amount?.toFixed(2) || '0.00'}
                   </p>
-                  <span className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${statusInfo.color}`}>
+                  <span
+                    className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${statusInfo.color}`}
+                  >
                     <StatusIcon className='w-4 h-4' />
                     {statusInfo.text}
                   </span>
@@ -303,10 +314,10 @@ export default function DashboardPage() {
 
       {/* Order Modal */}
       {showOrderModal && selectedOrder && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-xl font-bold text-gray-900">
+        <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4'>
+          <div className='bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden'>
+            <div className='flex items-center justify-between p-6 border-b border-gray-200'>
+              <h3 className='text-xl font-bold text-gray-900'>
                 Λεπτομέρειες Παραγγελίας #{selectedOrder.id}
               </h3>
               <button
@@ -314,16 +325,13 @@ export default function DashboardPage() {
                   setShowOrderModal(false);
                   setSelectedOrder(null);
                 }}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className='p-2 hover:bg-gray-100 rounded-lg transition-colors'
               >
-                <XCircle className="w-6 h-6 text-gray-500" />
+                <XCircle className='w-6 h-6 text-gray-500' />
               </button>
             </div>
-            <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
-              <OrderCard
-                order={selectedOrder}
-                onUpdate={handleOrderUpdate}
-              />
+            <div className='overflow-y-auto max-h-[calc(90vh-120px)]'>
+              <OrderCard order={selectedOrder} onUpdate={handleOrderUpdate} />
             </div>
           </div>
         </div>
