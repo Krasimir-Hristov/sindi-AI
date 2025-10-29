@@ -772,3 +772,92 @@ async function recalculateOrderTotals(orderId: string) {
     console.error('Error recalculating order totals:', error);
   }
 }
+
+export async function getDashboardData() {
+  try {
+    const supabase = await getServerSupabase();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return null;
+    }
+
+    // Get total sales and other stats
+    const { data: orders, error: ordersError } = await supabase
+      .from('orders')
+      .select('total_amount, paid_amount, status, created_at')
+      .eq('user_id', user.id);
+
+    if (ordersError) {
+      console.error('Error fetching orders for dashboard:', ordersError);
+      return null;
+    }
+
+    // Calculate stats
+    const totalSales = orders?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
+    const totalPaid = orders?.reduce((sum, order) => sum + (order.paid_amount || 0), 0) || 0;
+    const totalOrders = orders?.length || 0;
+
+    // Count orders by status
+    const completedOrders = orders?.filter(order => order.status === 'paid').length || 0;
+    const pendingOrders = orders?.filter(order => order.status === 'partial' || order.status === 'pending').length || 0;
+
+    // Calculate completion rate
+    const completionRate = totalOrders > 0 ? Math.round((completedOrders / totalOrders) * 100) : 0;
+
+    // Get recent orders (last 5)
+    const { data: recentOrders, error: recentError } = await supabase
+      .from('orders')
+      .select(`
+        id,
+        total_amount,
+        paid_amount,
+        status,
+        created_at,
+        notes,
+        client:clients(id, first_name, last_name, phone),
+        order_items(
+          id,
+          quantity,
+          unit_price,
+          paid_quantity,
+          product:products(id, name)
+        )
+      `)
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(5);
+
+    if (recentError) {
+      console.error('Error fetching recent orders:', recentError);
+      return null;
+    }
+
+    // Get active customers count
+    const { data: customers, error: customersError } = await supabase
+      .from('clients')
+      .select('id')
+      .eq('user_id', user.id);
+
+    const activeCustomers = customers?.length || 0;
+
+    return {
+      stats: {
+        totalSales,
+        totalPaid,
+        totalOrders,
+        completedOrders,
+        pendingOrders,
+        completionRate,
+        activeCustomers,
+      },
+      recentOrders: recentOrders || [],
+    };
+  } catch (error) {
+    console.error('Error fetching dashboard data:', error);
+    return null;
+  }
+}

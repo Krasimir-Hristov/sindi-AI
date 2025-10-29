@@ -1,5 +1,7 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import { getDashboardData } from '@/lib/actions/orders';
 import { motion } from 'framer-motion';
 import {
   TrendingUp,
@@ -11,75 +13,7 @@ import {
   CheckCircle,
   XCircle,
 } from 'lucide-react';
-
-const stats = [
-  {
-    title: 'Συνολικές Πωλήσεις',
-    value: '€12,450',
-    change: '+12.5%',
-    icon: DollarSign,
-    color: 'from-pink-500 to-rose-500',
-  },
-  {
-    title: 'Νέες Παραγγελίες',
-    value: '48',
-    change: '+8.2%',
-    icon: ShoppingBag,
-    color: 'from-purple-500 to-indigo-500',
-  },
-  {
-    title: 'Ενεργοί Πελάτες',
-    value: '1,234',
-    change: '+15.3%',
-    icon: Users,
-    color: 'from-blue-500 to-cyan-500',
-  },
-  {
-    title: 'Ποσοστό Ολοκλήρωσης',
-    value: '94%',
-    change: '+2.1%',
-    icon: TrendingUp,
-    color: 'from-green-500 to-emerald-500',
-  },
-];
-
-const recentOrders = [
-  {
-    id: '#2456',
-    customer: 'Μαρία Παπαδοπούλου',
-    amount: '€145.00',
-    status: 'completed',
-    time: 'πριν 5 λεπτά',
-  },
-  {
-    id: '#2455',
-    customer: 'Ελένη Γεωργίου',
-    amount: '€89.50',
-    status: 'pending',
-    time: 'πριν 15 λεπτά',
-  },
-  {
-    id: '#2454',
-    customer: 'Σοφία Ανδρέου',
-    amount: '€234.00',
-    status: 'completed',
-    time: 'πριν 1 ώρα',
-  },
-  {
-    id: '#2453',
-    customer: 'Κατερίνα Δημητρίου',
-    amount: '€67.00',
-    status: 'cancelled',
-    time: 'πριν 2 ώρες',
-  },
-  {
-    id: '#2452',
-    customer: 'Άννα Νικολάου',
-    amount: '€198.50',
-    status: 'completed',
-    time: 'πριν 3 ώρες',
-  },
-];
+import OrderCard from './orders/components/OrderCard';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -100,6 +34,112 @@ const itemVariants = {
 };
 
 export default function DashboardPage() {
+  const [dashboardData, setDashboardData] = useState<{
+    stats: {
+      totalSales: number;
+      totalPaid: number;
+      totalOrders: number;
+      completedOrders: number;
+      pendingOrders: number;
+      completionRate: number;
+      activeCustomers: number;
+    };
+    recentOrders: any[];
+  } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [showOrderModal, setShowOrderModal] = useState(false);
+
+  const handleOrderClick = (order: any) => {
+    setSelectedOrder(order);
+    setShowOrderModal(true);
+  };
+
+  const handleOrderUpdate = async () => {
+    // Refresh dashboard data after order changes
+    try {
+      const data = await getDashboardData();
+      setDashboardData(data);
+
+      // Check if the selected order still exists or was cancelled
+      if (selectedOrder) {
+        const updatedOrder = data?.recentOrders.find(order => order.id === selectedOrder.id);
+        if (!updatedOrder || updatedOrder.status === 'cancelled') {
+          // Order was deleted or cancelled, close the modal
+          setShowOrderModal(false);
+          setSelectedOrder(null);
+        } else {
+          // Update the selected order with fresh data
+          setSelectedOrder(updatedOrder);
+        }
+      }
+    } catch (error) {
+      console.error('Error refreshing dashboard data:', error);
+    }
+  };
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const data = await getDashboardData();
+        setDashboardData(data);
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+      </div>
+    );
+  }
+
+  if (!dashboardData) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <p className="text-gray-500">Не можаха да се заредят данните</p>
+      </div>
+    );
+  }
+
+  const { stats, recentOrders } = dashboardData;
+
+  const statsCards = [
+    {
+      title: 'Συνολικές Πωλήσεις',
+      value: `€${stats.totalSales.toFixed(2)}`,
+      change: stats.totalOrders > 0 ? `+${Math.round((stats.totalSales / stats.totalOrders) * 100) / 100}%` : '+0%',
+      icon: DollarSign,
+      color: 'from-pink-500 to-rose-500',
+    },
+    {
+      title: 'Νέες Παραγγελίες',
+      value: stats.totalOrders.toString(),
+      change: `+${stats.pendingOrders}`,
+      icon: ShoppingBag,
+      color: 'from-purple-500 to-indigo-500',
+    },
+    {
+      title: 'Ενεργοί Πελάτες',
+      value: stats.activeCustomers.toString(),
+      change: '+0',
+      icon: Users,
+      color: 'from-blue-500 to-cyan-500',
+    },
+    {
+      title: 'Ποσοστό Ολοκλήρωσης',
+      value: `${stats.completionRate}%`,
+      change: `+${stats.completedOrders}`,
+      icon: TrendingUp,
+      color: 'from-green-500 to-emerald-500',
+    },
+  ];
   return (
     <motion.div
       variants={containerVariants}
@@ -117,7 +157,10 @@ export default function DashboardPage() {
               Καλώς ήρθες πίσω! ✨
             </h1>
             <p className='text-gray-600 text-lg'>
-              Έχεις 12 νέες παραγγελίες που περιμένουν σήμερα
+              {stats.pendingOrders > 0
+                ? `Έχεις ${stats.pendingOrders} νέες παραγγελίες που περιμένουν σήμερα`
+                : 'Όλες οι παραγγελίες σου είναι ενημερωμένες'
+              }
             </p>
           </div>
           <motion.div
@@ -133,7 +176,7 @@ export default function DashboardPage() {
         variants={itemVariants}
         className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'
       >
-        {stats.map((stat) => {
+        {statsCards.map((stat) => {
           const Icon = stat.icon;
           return (
             <motion.div
@@ -179,56 +222,112 @@ export default function DashboardPage() {
         </div>
 
         <div className='space-y-4'>
-          {recentOrders.map((order, index) => (
-            <motion.div
-              key={order.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ scale: 1.01 }}
-              className='flex items-center justify-between p-4 bg-linear-to-r from-pink-50 to-purple-50 rounded-xl hover:shadow-md transition-all'
-            >
-              <div className='flex items-center gap-4'>
-                <div className='w-12 h-12 bg-linear-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold'>
-                  {order.customer.charAt(0)}
-                </div>
-                <div>
-                  <p className='font-semibold text-gray-900'>
-                    {order.customer}
-                  </p>
-                  <p className='text-sm text-gray-600'>
-                    {order.id} • {order.time}
-                  </p>
-                </div>
-              </div>
+          {recentOrders.map((order: any, index: number) => {
+            const getStatusInfo = (status: string) => {
+              switch (status) {
+                case 'paid':
+                  return {
+                    text: 'Ολοκληρώθηκε',
+                    color: 'bg-green-100 text-green-700',
+                    icon: CheckCircle,
+                  };
+                case 'partial':
+                  return {
+                    text: 'Μερική Πληρωμή',
+                    color: 'bg-yellow-100 text-yellow-700',
+                    icon: Clock,
+                  };
+                case 'cancelled':
+                  return {
+                    text: 'Ακυρώθηκε',
+                    color: 'bg-red-100 text-red-700',
+                    icon: XCircle,
+                  };
+                default:
+                  return {
+                    text: 'Εκκρεμεί',
+                    color: 'bg-gray-100 text-gray-700',
+                    icon: Clock,
+                  };
+              }
+            };
 
-              <div className='flex items-center gap-6'>
-                <p className='font-bold text-gray-900 text-lg'>
-                  {order.amount}
-                </p>
-                {order.status === 'completed' && (
-                  <span className='flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium'>
-                    <CheckCircle className='w-4 h-4' />
-                    Ολοκληρώθηκε
+            const statusInfo = getStatusInfo(order.status);
+            const StatusIcon = statusInfo.icon;
+            const customerName = `${order.client?.first_name || ''} ${order.client?.last_name || ''}`.trim() || 'Άγνωστος Πελάτης';
+            const timeAgo = new Date(order.created_at).toLocaleString('el-GR', {
+              day: 'numeric',
+              month: 'short',
+              hour: '2-digit',
+              minute: '2-digit',
+            });
+
+            return (
+              <motion.div
+                key={order.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ scale: 1.01 }}
+                onClick={() => handleOrderClick(order)}
+                className='flex items-center justify-between p-4 bg-linear-to-r from-pink-50 to-purple-50 rounded-xl hover:shadow-md transition-all cursor-pointer'
+              >
+                <div className='flex items-center gap-4'>
+                  <div className='w-12 h-12 bg-linear-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold'>
+                    {customerName.charAt(0)}
+                  </div>
+                  <div>
+                    <p className='font-semibold text-gray-900'>
+                      {customerName}
+                    </p>
+                    <p className='text-sm text-gray-600'>
+                      #{order.id} • {timeAgo}
+                    </p>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-6'>
+                  <p className='font-bold text-gray-900 text-lg'>
+                    €{order.total_amount?.toFixed(2) || '0.00'}
+                  </p>
+                  <span className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${statusInfo.color}`}>
+                    <StatusIcon className='w-4 h-4' />
+                    {statusInfo.text}
                   </span>
-                )}
-                {order.status === 'pending' && (
-                  <span className='flex items-center gap-1 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium'>
-                    <Clock className='w-4 h-4' />
-                    Εκκρεμεί
-                  </span>
-                )}
-                {order.status === 'cancelled' && (
-                  <span className='flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium'>
-                    <XCircle className='w-4 h-4' />
-                    Ακυρώθηκε
-                  </span>
-                )}
-              </div>
-            </motion.div>
-          ))}
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </motion.div>
+
+      {/* Order Modal */}
+      {showOrderModal && selectedOrder && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-xl font-bold text-gray-900">
+                Λεπτομέρειες Παραγγελίας #{selectedOrder.id}
+              </h3>
+              <button
+                onClick={() => {
+                  setShowOrderModal(false);
+                  setSelectedOrder(null);
+                }}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <XCircle className="w-6 h-6 text-gray-500" />
+              </button>
+            </div>
+            <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
+              <OrderCard
+                order={selectedOrder}
+                onUpdate={handleOrderUpdate}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 }
