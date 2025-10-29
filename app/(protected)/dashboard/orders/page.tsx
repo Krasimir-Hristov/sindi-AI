@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Plus } from 'lucide-react';
+import { ShoppingBag, Plus, Search } from 'lucide-react';
 import { getOrders } from '@/lib/actions/orders';
 import OrderCard from './components/OrderCard';
 import OrderFormModal from './components/OrderFormModal';
@@ -29,6 +29,7 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -38,6 +39,16 @@ export default function OrdersPage() {
     }
     setLoading(false);
   };
+
+  const filteredOrders = orders.filter(
+    (order) =>
+      `${order.client?.first_name || ''} ${order.client?.last_name || ''}`
+        .toLowerCase()
+        .trim()
+        .includes(searchTerm.toLowerCase()) ||
+      order.client?.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.id.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   useEffect(() => {
     fetchOrders();
@@ -90,6 +101,26 @@ export default function OrdersPage() {
         </motion.button>
       </motion.div>
 
+      {/* Search Bar */}
+      {orders.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className='max-w-md'
+        >
+          <div className='relative'>
+            <Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5' />
+            <input
+              type='text'
+              placeholder='Αναζήτηση παραγγελιών...'
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className='w-full pl-12 pr-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 outline-none transition-all bg-white'
+            />
+          </div>
+        </motion.div>
+      )}
+
       {/* Orders List */}
       {orders.length === 0 ? (
         <motion.div
@@ -111,6 +142,26 @@ export default function OrdersPage() {
             Δημιουργία Παραγγελίας
           </button>
         </motion.div>
+      ) : filteredOrders.length === 0 && searchTerm !== '' ? (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className='text-center py-16 bg-white rounded-2xl shadow-lg'
+        >
+          <Search className='w-16 h-16 mx-auto mb-4 text-gray-300' />
+          <h3 className='text-xl font-semibold text-gray-700 mb-2'>
+            Δεν βρέθηκαν παραγγελίες
+          </h3>
+          <p className='text-gray-500 mb-6'>
+            Δεν υπάρχουν παραγγελίες που να ταιριάζουν με "{searchTerm}"
+          </p>
+          <button
+            onClick={() => setSearchTerm('')}
+            className='px-6 py-3 bg-purple-100 text-purple-700 rounded-xl font-medium hover:bg-purple-200 transition-colors'
+          >
+            Εκκαθάριση αναζήτησης
+          </button>
+        </motion.div>
       ) : (
         <motion.div
           variants={containerVariants}
@@ -118,7 +169,7 @@ export default function OrdersPage() {
           animate='visible'
           className='space-y-4'
         >
-          {orders.map((order) => (
+          {filteredOrders.map((order) => (
             <motion.div key={order.id} variants={itemVariants}>
               <OrderCard order={order} onUpdate={fetchOrders} />
             </motion.div>
