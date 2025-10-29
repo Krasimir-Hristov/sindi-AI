@@ -279,8 +279,14 @@ export default function DashboardPage() {
             });
 
             // Get order summary
-            const totalItems = order.order_items?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0;
-            const orderSummary = `${totalItems} προϊόν${totalItems === 1 ? '' : 'α'}`;
+            const totalItems =
+              order.order_items?.reduce(
+                (sum: number, item: any) => sum + item.quantity,
+                0
+              ) || 0;
+            const orderSummary = `${totalItems} προϊόν${
+              totalItems === 1 ? '' : 'α'
+            }`;
 
             return (
               <motion.div
