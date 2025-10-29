@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingBag, Plus, Search } from 'lucide-react';
 import { getOrders } from '@/lib/actions/orders';
@@ -40,15 +40,17 @@ export default function OrdersPage() {
     setLoading(false);
   };
 
-  const filteredOrders = orders.filter(
-    (order) =>
-      `${order.client?.first_name || ''} ${order.client?.last_name || ''}`
-        .toLowerCase()
-        .trim()
-        .includes(searchTerm.toLowerCase()) ||
-      order.client?.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.id.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredOrders = useMemo(() => {
+    return orders.filter(
+      (order) =>
+        `${order.client?.first_name || ''} ${order.client?.last_name || ''}`
+          .toLowerCase()
+          .trim()
+          .includes(searchTerm.toLowerCase()) ||
+        order.client?.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.id.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [orders, searchTerm]);
 
   useEffect(() => {
     fetchOrders();
@@ -164,6 +166,7 @@ export default function OrdersPage() {
         </motion.div>
       ) : (
         <motion.div
+          key={`orders-${searchTerm}-${filteredOrders.length}`}
           variants={containerVariants}
           initial='hidden'
           animate='visible'
