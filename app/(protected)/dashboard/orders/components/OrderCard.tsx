@@ -246,93 +246,93 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
         {/* Header */}
         <div
           onClick={() => setExpanded(!expanded)}
-          className='p-6 cursor-pointer hover:bg-gray-50 transition-colors'
+          className='p-3 sm:p-4 lg:p-6 cursor-pointer hover:bg-gray-50 transition-colors'
         >
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center gap-4 flex-1'>
+          <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4'>
+            <div className='flex items-center gap-3 flex-1 min-w-0'>
               {/* Client Info */}
-              <div className='flex items-center gap-3'>
-                <div className='p-3 bg-purple-100 rounded-xl'>
-                  <User className='w-5 h-5 text-purple-600' />
+              <div className='flex items-center gap-2 sm:gap-3 min-w-0 flex-1'>
+                <div className='p-2 sm:p-3 bg-purple-100 rounded-xl flex-shrink-0'>
+                  <User className='w-4 h-4 sm:w-5 sm:h-5 text-purple-600' />
                 </div>
-                <div>
-                  <p className='font-semibold text-gray-900'>
+                <div className='min-w-0 flex-1'>
+                  <p className='font-semibold text-gray-900 text-sm sm:text-base truncate'>
                     {order.client.first_name} {order.client.last_name}
                   </p>
-                  <p className='text-sm text-gray-500'>{order.client.phone}</p>
+                  <p className='text-xs sm:text-sm text-gray-500 truncate'>{order.client.phone}</p>
                 </div>
               </div>
+            </div>
 
-              {/* Order Info */}
-              <div className='flex items-center gap-6 ml-auto'>
-                {/* Total Amount */}
-                <div className='text-right'>
-                  <p className='text-sm text-gray-500'>Σύνολο</p>
-                  <p className='font-semibold text-gray-900'>
-                    €{order.total_amount.toFixed(2)}
-                  </p>
-                </div>
+            {/* Order Info - Stacked on mobile, row on desktop */}
+            <div className='flex items-center justify-between sm:justify-end gap-2 sm:gap-4 lg:gap-6'>
+              {/* Total Amount */}
+              <div className='text-left sm:text-right'>
+                <p className='text-xs text-gray-500'>Σύνολο</p>
+                <p className='font-semibold text-gray-900 text-sm sm:text-base'>
+                  €{order.total_amount.toFixed(2)}
+                </p>
+              </div>
 
-                {/* Paid Amount */}
-                <div className='text-right'>
-                  <p className='text-sm text-gray-500'>Πληρωμένο</p>
-                  <p className='font-semibold text-green-600'>
-                    €{order.paid_amount.toFixed(2)}
-                  </p>
-                </div>
+              {/* Paid Amount */}
+              <div className='text-left sm:text-right'>
+                <p className='text-xs text-gray-500'>Πληρωμένο</p>
+                <p className='font-semibold text-green-600 text-sm sm:text-base'>
+                  €{order.paid_amount.toFixed(2)}
+                </p>
+              </div>
 
-                {/* Remaining Amount */}
-                <div className='text-right'>
-                  <p className='text-sm text-gray-500'>Υπόλοιπο</p>
-                  <p className='font-semibold text-orange-600'>
-                    €{(order.total_amount - order.paid_amount).toFixed(2)}
-                  </p>
-                </div>
+              {/* Remaining Amount - Hidden on very small screens */}
+              <div className='hidden xs:block text-left sm:text-right'>
+                <p className='text-xs text-gray-500'>Υπόλοιπο</p>
+                <p className='font-semibold text-orange-600 text-sm sm:text-base'>
+                  €{(order.total_amount - order.paid_amount).toFixed(2)}
+                </p>
+              </div>
 
-                {/* Status */}
-                <div
-                  className={`px-4 py-2 rounded-lg border ${getStatusColor(
-                    order.status
-                  )} flex items-center gap-2 font-semibold`}
-                >
-                  {getStatusIcon(order.status)}
-                  {getStatusText(order.status)}
-                </div>
+              {/* Status */}
+              <div
+                className={`px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg border ${getStatusColor(
+                  order.status
+                )} flex items-center gap-1 sm:gap-2 font-semibold text-xs sm:text-sm whitespace-nowrap`}
+              >
+                {getStatusIcon(order.status)}
+                <span className='hidden xs:inline'>{getStatusText(order.status)}</span>
+              </div>
 
-                {/* Expand Icon */}
-                <div className='text-gray-400'>
-                  {expanded ? (
-                    <ChevronUp className='w-5 h-5' />
-                  ) : (
-                    <ChevronDown className='w-5 h-5' />
-                  )}
-                </div>
+              {/* Expand Icon */}
+              <div className='text-gray-400 flex-shrink-0'>
+                {expanded ? (
+                  <ChevronUp className='w-4 h-4 sm:w-5 sm:h-5' />
+                ) : (
+                  <ChevronDown className='w-4 h-4 sm:w-5 sm:h-5' />
+                )}
               </div>
             </div>
           </div>
 
           {/* Date */}
-          <div className='mt-4 flex items-center gap-2 text-sm text-gray-500'>
-            <Clock className='w-4 h-4' />
-            {new Date(order.created_at).toLocaleString('el-GR')}
+          <div className='mt-3 sm:mt-4 flex items-center gap-2 text-xs sm:text-sm text-gray-500'>
+            <Clock className='w-3 h-3 sm:w-4 sm:h-4' />
+            <span className='truncate'>{new Date(order.created_at).toLocaleString('el-GR')}</span>
           </div>
         </div>
 
         {/* Expanded Content */}
         {expanded && (
-          <div className='border-t border-gray-100 p-6 bg-gray-50'>
+          <div className='border-t border-gray-100 p-3 sm:p-4 lg:p-6 bg-gray-50'>
             {/* Order Items */}
-            <div className='space-y-4'>
+            <div className='space-y-3 sm:space-y-4'>
               {order.order_items.map((item: any) => (
                 <div
                   key={item.id}
-                  className='bg-white p-4 rounded-xl border border-gray-200'
+                  className='bg-white p-3 sm:p-4 rounded-xl border border-gray-200'
                 >
-                  <div className='flex items-center justify-between mb-3'>
-                    <div className='flex items-center gap-3'>
-                      <Package className='w-5 h-5 text-purple-600' />
-                      <div>
-                        <p className='font-semibold text-gray-900'>
+                  <div className='flex items-start sm:items-center justify-between mb-2 sm:mb-3 gap-2'>
+                    <div className='flex items-center gap-2 sm:gap-3 min-w-0 flex-1'>
+                      <Package className='w-4 h-4 sm:w-5 sm:h-5 text-purple-600 flex-shrink-0' />
+                      <div className='min-w-0 flex-1'>
+                        <p className='font-semibold text-gray-900 text-sm sm:text-base truncate'>
                           {item.product.name}
                         </p>
                       </div>
@@ -340,26 +340,26 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
 
                     {/* Item Actions */}
                     {order.status !== 'cancelled' && (
-                      <div className='flex gap-2'>
+                      <div className='flex gap-1 sm:gap-2 flex-shrink-0'>
                         <button
                           onClick={() =>
                             startEditingQuantity(item.id, item.quantity)
                           }
                           disabled={loading}
-                          className='p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors disabled:opacity-50'
+                          className='p-1.5 sm:p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors disabled:opacity-50'
                           title='Επεξεργασία Ποσότητας'
                         >
-                          <Edit className='w-4 h-4' />
+                          <Edit className='w-3.5 h-3.5 sm:w-4 sm:h-4' />
                         </button>
                         <button
                           onClick={() =>
                             handleDeleteItem(item.id, item.product.name)
                           }
                           disabled={loading}
-                          className='p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50'
+                          className='p-1.5 sm:p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50'
                           title='Διαγραφή Προϊόντος'
                         >
-                          <Trash2 className='w-4 h-4' />
+                          <Trash2 className='w-3.5 h-3.5 sm:w-4 sm:h-4' />
                         </button>
                       </div>
                     )}
@@ -367,9 +367,9 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
 
                   {/* Quantity Editing */}
                   {editingQuantityId === item.id ? (
-                    <div className='mb-3 p-3 bg-blue-50 rounded-lg border border-blue-200'>
-                      <div className='flex items-center gap-3'>
-                        <label className='text-sm font-semibold text-blue-900'>
+                    <div className='mb-2 sm:mb-3 p-2 sm:p-3 bg-blue-50 rounded-lg border border-blue-200'>
+                      <div className='flex flex-wrap items-center gap-2 sm:gap-3'>
+                        <label className='text-xs sm:text-sm font-semibold text-blue-900'>
                           Ποσότητα:
                         </label>
                         <input
@@ -382,7 +382,7 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                               [item.id]: parseInt(e.target.value) || 1,
                             })
                           }
-                          className='w-20 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center font-semibold'
+                          className='w-16 sm:w-20 px-2 sm:px-3 py-1.5 sm:py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center font-semibold text-sm'
                           disabled={loading}
                         />
                         <button
@@ -391,22 +391,22 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                             loading ||
                             (tempQuantities[item.id] || item.quantity) <= 0
                           }
-                          className='px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-sm font-semibold'
+                          className='p-1.5 sm:p-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50'
                         >
-                          <CheckCircle className='w-4 h-4' />
+                          <CheckCircle className='w-3.5 h-3.5 sm:w-4 sm:h-4' />
                         </button>
                         <button
                           onClick={cancelQuantityEditing}
                           disabled={loading}
-                          className='px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 text-sm font-semibold'
+                          className='p-1.5 sm:p-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50'
                         >
-                          <XCircle className='w-4 h-4' />
+                          <XCircle className='w-3.5 h-3.5 sm:w-4 sm:h-4' />
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <div className='mb-3'>
-                      <p className='text-sm text-gray-600'>
+                    <div className='mb-2 sm:mb-3'>
+                      <p className='text-xs sm:text-sm text-gray-600'>
                         Ποσότητα:{' '}
                         <span className='font-semibold'>{item.quantity}</span>
                       </p>
@@ -414,53 +414,53 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                   )}
 
                   {/* Product Financial Summary */}
-                  <div className='grid grid-cols-3 gap-3 mb-3 p-3 bg-gray-50 rounded-lg'>
+                  <div className='grid grid-cols-3 gap-2 sm:gap-3 mb-2 sm:mb-3 p-2 sm:p-3 bg-gray-50 rounded-lg'>
                     <div className='text-center'>
-                      <p className='text-xs text-gray-500 mb-1'>Σύνολο</p>
-                      <p className='font-semibold text-gray-900'>
+                      <p className='text-xs text-gray-500 mb-0.5 sm:mb-1'>Σύνολο</p>
+                      <p className='font-semibold text-gray-900 text-xs sm:text-sm lg:text-base'>
                         €{(item.unit_price * item.quantity).toFixed(2)}
                       </p>
-                      <p className='text-xs text-gray-400'>
+                      <p className='text-xs text-gray-400 hidden sm:block'>
                         €{item.unit_price.toFixed(2)} × {item.quantity}
                       </p>
                     </div>
                     <div className='text-center'>
-                      <p className='text-xs text-gray-500 mb-1'>Πληρωμένο</p>
-                      <p className='font-semibold text-green-600'>
+                      <p className='text-xs text-gray-500 mb-0.5 sm:mb-1'>Πληρωμένο</p>
+                      <p className='font-semibold text-green-600 text-xs sm:text-sm lg:text-base'>
                         €{(item.unit_price * item.paid_quantity).toFixed(2)}
                       </p>
-                      <p className='text-xs text-gray-400'>
+                      <p className='text-xs text-gray-400 hidden sm:block'>
                         {item.paid_quantity} τεμ.
                       </p>
                     </div>
                     <div className='text-center'>
-                      <p className='text-xs text-gray-500 mb-1'>Υπόλοιπο</p>
-                      <p className='font-semibold text-orange-600'>
+                      <p className='text-xs text-gray-500 mb-0.5 sm:mb-1'>Υπόλοιπο</p>
+                      <p className='font-semibold text-orange-600 text-xs sm:text-sm lg:text-base'>
                         €
                         {(
                           item.unit_price *
                           (item.quantity - item.paid_quantity)
                         ).toFixed(2)}
                       </p>
-                      <p className='text-xs text-gray-400'>
+                      <p className='text-xs text-gray-400 hidden sm:block'>
                         {item.quantity - item.paid_quantity} τεμ.
                       </p>
                     </div>
                   </div>
 
                   {/* Payment Progress Bar */}
-                  <div className='mb-3'>
-                    <div className='flex items-center justify-between mb-2'>
-                      <span className='text-sm text-gray-600'>
+                  <div className='mb-2 sm:mb-3'>
+                    <div className='flex items-center justify-between mb-1.5 sm:mb-2'>
+                      <span className='text-xs sm:text-sm text-gray-600'>
                         Πρόοδος Πληρωμής:
                       </span>
-                      <span className='font-semibold text-purple-600'>
+                      <span className='font-semibold text-purple-600 text-xs sm:text-sm'>
                         {item.paid_quantity} / {item.quantity}
                       </span>
                     </div>
-                    <div className='w-full bg-gray-200 rounded-full h-2'>
+                    <div className='w-full bg-gray-200 rounded-full h-1.5 sm:h-2'>
                       <div
-                        className='bg-green-500 h-2 rounded-full transition-all'
+                        className='bg-green-500 h-1.5 sm:h-2 rounded-full transition-all'
                         style={{
                           width: `${
                             (item.paid_quantity / item.quantity) * 100
@@ -472,7 +472,7 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
 
                   {/* Payment Actions */}
                   {order.status !== 'cancelled' && (
-                    <div className='flex gap-2 items-center justify-end'>
+                    <div className='flex flex-wrap gap-2 items-center justify-end'>
                       {editingItemId === item.id ? (
                         <>
                           {/* Edit Mode */}
@@ -487,7 +487,7 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                                 [item.id]: parseInt(e.target.value) || 0,
                               })
                             }
-                            className='w-20 px-3 py-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-center font-semibold'
+                            className='w-16 sm:w-20 px-2 sm:px-3 py-1.5 sm:py-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-center font-semibold text-sm'
                             disabled={loading}
                           />
                           <button
@@ -497,14 +497,14 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                               (tempPaidQuantities[item.id] || 0) < 0 ||
                               (tempPaidQuantities[item.id] || 0) > item.quantity
                             }
-                            className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-sm font-semibold'
+                            className='p-1.5 sm:p-2 sm:px-3 sm:py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50'
                           >
                             <CheckCircle className='w-4 h-4' />
                           </button>
                           <button
                             onClick={cancelEditing}
                             disabled={loading}
-                            className='px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 text-sm font-semibold'
+                            className='p-1.5 sm:p-2 sm:px-3 sm:py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50'
                           >
                             <XCircle className='w-4 h-4' />
                           </button>
@@ -518,10 +518,11 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                                 handlePaymentUpdate(item.id, item.quantity)
                               }
                               disabled={loading}
-                              className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-sm font-semibold flex items-center gap-2'
+                              className='px-3 sm:px-4 py-1.5 sm:py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2'
                             >
-                              <DollarSign className='w-4 h-4' />
-                              Πλήρης Πληρωμή
+                              <DollarSign className='w-3.5 h-3.5 sm:w-4 sm:h-4' />
+                              <span className='hidden sm:inline'>Πλήρης Πληρωμή</span>
+                              <span className='sm:hidden'>Πληρωμή</span>
                             </button>
                           )}
                           <button
@@ -529,9 +530,10 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                               startEditing(item.id, item.paid_quantity)
                             }
                             disabled={loading}
-                            className='px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors disabled:opacity-50 text-sm font-semibold'
+                            className='px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors disabled:opacity-50 text-xs sm:text-sm font-semibold'
                           >
-                            Επεξεργασία Πληρωμής
+                            <span className='hidden sm:inline'>Επεξεργασία Πληρωμής</span>
+                            <span className='sm:hidden'>Επεξ. Πληρ.</span>
                           </button>
                         </>
                       )}
@@ -543,34 +545,36 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
 
             {/* Notes */}
             {order.notes && (
-              <div className='mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200'>
-                <p className='text-sm font-semibold text-blue-900 mb-1'>
+              <div className='mt-3 sm:mt-4 p-3 sm:p-4 bg-blue-50 rounded-xl border border-blue-200'>
+                <p className='text-xs sm:text-sm font-semibold text-blue-900 mb-1'>
                   Σημειώσεις:
                 </p>
-                <p className='text-sm text-blue-700'>{order.notes}</p>
+                <p className='text-xs sm:text-sm text-blue-700'>{order.notes}</p>
               </div>
             )}
 
             {/* Cancel Order Button */}
             {order.status !== 'cancelled' && (
-              <div className='mt-6 flex justify-end gap-3'>
+              <div className='mt-4 sm:mt-6 flex flex-wrap justify-end gap-2 sm:gap-3'>
                 {order.status !== 'paid' && (
                   <button
                     onClick={handlePayFullOrder}
                     disabled={loading}
-                    className='flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors disabled:opacity-50'
+                    className='flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 text-xs sm:text-sm lg:text-base'
                   >
-                    <DollarSign className='w-5 h-5' />
-                    Πλήρης Πληρωμή Παραγγελίας
+                    <DollarSign className='w-4 h-4 sm:w-5 sm:h-5' />
+                    <span className='hidden sm:inline'>Πλήρης Πληρωμή Παραγγελίας</span>
+                    <span className='sm:hidden'>Πλήρης Πληρ.</span>
                   </button>
                 )}
                 <button
                   onClick={openCancelOrderModal}
                   disabled={loading}
-                  className='flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors disabled:opacity-50'
+                  className='flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 text-xs sm:text-sm lg:text-base'
                 >
-                  <XCircle className='w-5 h-5' />
-                  Διαγραφή Παραγγελίας
+                  <XCircle className='w-4 h-4 sm:w-5 sm:h-5' />
+                  <span className='hidden sm:inline'>Διαγραφή Παραγγελίας</span>
+                  <span className='sm:hidden'>Διαγραφή</span>
                 </button>
               </div>
             )}

@@ -96,10 +96,11 @@ export default function OrdersPage() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsModalOpen(true)}
-          className='flex items-center gap-2 px-6 py-3 bg-linear-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300'
+          className='flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 bg-linear-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base'
         >
-          <Plus className='w-5 h-5' />
-          Νέα Παραγγελία
+          <Plus className='w-4 h-4 sm:w-5 sm:h-5' />
+          <span className='hidden xs:inline sm:inline'>Νέα Παραγγελία</span>
+          <span className='xs:hidden'>Νέα</span>
         </motion.button>
       </motion.div>
 

@@ -180,18 +180,18 @@ export default function ProductsPage() {
       {/* Header */}
       <motion.div
         variants={itemVariants}
-        className='bg-white rounded-2xl shadow-lg p-8 border border-purple-100'
+        className='bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8 border border-purple-100'
       >
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-4'>
-            <div className='p-4 bg-linear-to-br from-pink-500 to-purple-600 rounded-2xl shadow-lg'>
-              <Package className='w-8 h-8 text-white' />
+        <div className='flex items-center justify-between gap-3'>
+          <div className='flex items-center gap-2 sm:gap-4 min-w-0 flex-1'>
+            <div className='p-2 sm:p-3 lg:p-4 bg-linear-to-br from-pink-500 to-purple-600 rounded-xl sm:rounded-2xl shadow-lg flex-shrink-0'>
+              <Package className='w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-white' />
             </div>
-            <div>
-              <h1 className='text-4xl font-bold bg-linear-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent'>
+            <div className='min-w-0'>
+              <h1 className='text-xl sm:text-2xl lg:text-4xl font-bold bg-linear-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent truncate'>
                 Προϊόντα
               </h1>
-              <p className='text-gray-600 mt-1'>
+              <p className='text-gray-600 mt-0.5 sm:mt-1 text-xs sm:text-sm lg:text-base'>
                 {products.length}{' '}
                 {products.length === 1 ? 'προϊόν' : 'προϊόντα'}
               </p>
@@ -201,10 +201,11 @@ export default function ProductsPage() {
             onClick={handleOpenFormModal}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className='flex items-center gap-2 px-6 py-3 bg-linear-to-r from-pink-500 to-purple-600 text-white rounded-xl font-semibold shadow-lg hover:from-pink-600 hover:to-purple-700 transition-all'
+            className='flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 bg-linear-to-r from-pink-500 to-purple-600 text-white rounded-xl font-semibold shadow-lg hover:from-pink-600 hover:to-purple-700 transition-all text-sm sm:text-base'
           >
-            <Plus className='w-5 h-5' />
-            Νέο Προϊόν
+            <Plus className='w-4 h-4 sm:w-5 sm:h-5' />
+            <span className='hidden xs:inline'>Νέο Προϊόν</span>
+            <span className='xs:hidden'>Νέο</span>
           </motion.button>
         </div>
       </motion.div>
@@ -243,9 +244,9 @@ export default function ProductsPage() {
             onClick={handleOpenFormModal}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className='inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-pink-500 to-purple-600 text-white rounded-xl font-semibold shadow-lg'
+            className='inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-linear-to-r from-pink-500 to-purple-600 text-white rounded-xl font-semibold shadow-lg text-sm sm:text-base'
           >
-            <Plus className='w-5 h-5' />
+            <Plus className='w-4 h-4 sm:w-5 sm:h-5' />
             Προσθήκη Προϊόντος
           </motion.button>
         </motion.div>

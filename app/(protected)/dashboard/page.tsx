@@ -163,14 +163,14 @@ export default function DashboardPage() {
     >
       <motion.div
         variants={itemVariants}
-        className='bg-white rounded-2xl shadow-lg p-8 border border-purple-100'
+        className='bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8 border border-purple-100'
       >
-        <div className='flex items-center justify-between'>
+        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
           <div>
-            <h1 className='text-4xl font-bold bg-linear-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-2'>
+            <h1 className='text-2xl sm:text-3xl lg:text-4xl font-bold bg-linear-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-2'>
               Καλώς ήρθες πίσω! ✨
             </h1>
-            <p className='text-gray-600 text-lg'>
+            <p className='text-gray-600 text-sm sm:text-base lg:text-lg'>
               {stats.pendingOrders > 0
                 ? `Έχεις ${stats.pendingOrders} νέες παραγγελίες που περιμένουν σήμερα`
                 : 'Όλες οι παραγγελίες σου είναι ενημερωμένες'}
@@ -187,7 +187,7 @@ export default function DashboardPage() {
 
       <motion.div
         variants={itemVariants}
-        className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'
+        className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6'
       >
         {statsCards.map((stat) => {
           const Icon = stat.icon;
@@ -196,22 +196,22 @@ export default function DashboardPage() {
               key={stat.title}
               variants={itemVariants}
               whileHover={{ scale: 1.02, y: -5 }}
-              className='bg-white rounded-2xl shadow-lg p-6 border border-purple-100 hover:shadow-xl transition-shadow'
+              className='bg-white rounded-2xl shadow-lg p-4 sm:p-6 border border-purple-100 hover:shadow-xl transition-shadow'
             >
-              <div className='flex items-start justify-between mb-4'>
+              <div className='flex items-start justify-between mb-3 sm:mb-4'>
                 <div
-                  className={`bg-linear-to-br ${stat.color} p-3 rounded-xl shadow-lg`}
+                  className={`bg-linear-to-br ${stat.color} p-2 sm:p-3 rounded-xl shadow-lg`}
                 >
-                  <Icon className='w-6 h-6 text-white' />
+                  <Icon className='w-5 h-5 sm:w-6 sm:h-6 text-white' />
                 </div>
-                <span className='text-green-600 font-semibold text-sm'>
+                <span className='text-green-600 font-semibold text-xs sm:text-sm'>
                   {stat.change}
                 </span>
               </div>
-              <h3 className='text-gray-600 text-sm font-medium mb-1'>
+              <h3 className='text-gray-600 text-xs sm:text-sm font-medium mb-1'>
                 {stat.title}
               </h3>
-              <p className='text-3xl font-bold text-gray-900'>{stat.value}</p>
+              <p className='text-2xl sm:text-3xl font-bold text-gray-900'>{stat.value}</p>
             </motion.div>
           );
         })}
@@ -219,16 +219,16 @@ export default function DashboardPage() {
 
       <motion.div
         variants={itemVariants}
-        className='bg-white rounded-2xl shadow-lg p-8 border border-purple-100'
+        className='bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8 border border-purple-100'
       >
-        <div className='flex items-center justify-between mb-6'>
-          <h2 className='text-2xl font-bold text-gray-900'>
+        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6'>
+          <h2 className='text-xl sm:text-2xl font-bold text-gray-900'>
             Πρόσφατες Παραγγελίες
           </h2>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className='px-4 py-2 bg-linear-to-r from-pink-500 to-purple-600 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition'
+            className='px-3 sm:px-4 py-2 bg-linear-to-r from-pink-500 to-purple-600 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition text-sm sm:text-base'
           >
             Προβολή Όλων
           </motion.button>
@@ -296,31 +296,31 @@ export default function DashboardPage() {
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ scale: 1.01 }}
                 onClick={() => handleOrderClick(order)}
-                className='flex items-center justify-between p-4 bg-linear-to-r from-pink-50 to-purple-50 rounded-xl hover:shadow-md transition-all cursor-pointer'
+                className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 p-3 sm:p-4 bg-linear-to-r from-pink-50 to-purple-50 rounded-xl hover:shadow-md transition-all cursor-pointer'
               >
-                <div className='flex items-center gap-4'>
-                  <div className='w-12 h-12 bg-linear-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold'>
+                <div className='flex items-center gap-3 sm:gap-4'>
+                  <div className='w-10 h-10 sm:w-12 sm:h-12 bg-linear-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm sm:text-base flex-shrink-0'>
                     {customerName.charAt(0)}
                   </div>
-                  <div>
-                    <p className='font-semibold text-gray-900'>
+                  <div className='min-w-0 flex-1'>
+                    <p className='font-semibold text-gray-900 text-sm sm:text-base truncate'>
                       {customerName}
                     </p>
-                    <p className='text-sm text-gray-600'>
+                    <p className='text-xs sm:text-sm text-gray-600 truncate'>
                       {orderSummary} • {timeAgo}
                     </p>
                   </div>
                 </div>
 
-                <div className='flex items-center gap-6'>
-                  <p className='font-bold text-gray-900 text-lg'>
+                <div className='flex items-center justify-between sm:justify-end gap-3 sm:gap-6 pl-13 sm:pl-0'>
+                  <p className='font-bold text-gray-900 text-base sm:text-lg'>
                     €{order.total_amount?.toFixed(2) || '0.00'}
                   </p>
                   <span
-                    className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${statusInfo.color}`}
+                    className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap ${statusInfo.color}`}
                   >
-                    <StatusIcon className='w-4 h-4' />
-                    {statusInfo.text}
+                    <StatusIcon className='w-3 h-3 sm:w-4 sm:h-4' />
+                    <span className='hidden xs:inline'>{statusInfo.text}</span>
                   </span>
                 </div>
               </motion.div>
@@ -331,10 +331,10 @@ export default function DashboardPage() {
 
       {/* Order Modal */}
       {showOrderModal && selectedOrder && (
-        <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4'>
+        <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4'>
           <div className='bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden'>
-            <div className='flex items-center justify-between p-6 border-b border-gray-200'>
-              <h3 className='text-xl font-bold text-gray-900'>
+            <div className='flex items-center justify-between p-4 sm:p-6 border-b border-gray-200'>
+              <h3 className='text-base sm:text-xl font-bold text-gray-900 truncate pr-2'>
                 Λεπτομέρειες Παραγγελίας #{selectedOrder.id}
               </h3>
               <button
@@ -342,12 +342,12 @@ export default function DashboardPage() {
                   setShowOrderModal(false);
                   setSelectedOrder(null);
                 }}
-                className='p-2 hover:bg-gray-100 rounded-lg transition-colors'
+                className='p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0'
               >
-                <XCircle className='w-6 h-6 text-gray-500' />
+                <XCircle className='w-5 h-5 sm:w-6 sm:h-6 text-gray-500' />
               </button>
             </div>
-            <div className='overflow-y-auto max-h-[calc(90vh-120px)]'>
+            <div className='overflow-y-auto max-h-[calc(90vh-80px)] sm:max-h-[calc(90vh-120px)]'>
               <OrderCard order={selectedOrder} onUpdate={handleOrderUpdate} />
             </div>
           </div>

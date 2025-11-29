@@ -98,25 +98,25 @@ export default function CalculatorPage() {
       {/* Header */}
       <motion.div
         variants={itemVariants}
-        className='bg-white rounded-2xl shadow-lg p-8 border border-purple-100'
+        className='bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8 border border-purple-100'
       >
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-4'>
-            <div className='p-4 bg-linear-to-br from-pink-500 to-purple-600 rounded-2xl shadow-lg'>
-              <Calculator className='w-8 h-8 text-white' />
+        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
+          <div className='flex items-center gap-3 sm:gap-4'>
+            <div className='p-2 sm:p-3 lg:p-4 bg-linear-to-br from-pink-500 to-purple-600 rounded-2xl shadow-lg flex-shrink-0'>
+              <Calculator className='w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white' />
             </div>
             <div>
-              <h1 className='text-4xl font-bold bg-linear-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent'>
+              <h1 className='text-2xl sm:text-3xl lg:text-4xl font-bold bg-linear-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent'>
                 Υπολογιστής Κέρδους
               </h1>
-              <p className='text-gray-600 mt-1'>Υπολογισμός κέρδους για λάδι</p>
+              <p className='text-gray-600 mt-1 text-sm sm:text-base'>Υπολογισμός κέρδους για λάδι</p>
             </div>
           </div>
           <motion.button
             onClick={handleReset}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className='flex items-center gap-2 px-4 py-2 bg-gray-100 cursor-pointer hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-all shadow-sm'
+            className='flex items-center justify-center sm:justify-start gap-2 px-4 py-2 bg-gray-100 cursor-pointer hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-all shadow-sm text-sm sm:text-base'
           >
             <RotateCcw className='w-4 h-4' />
             Επαναφορά
@@ -127,18 +127,18 @@ export default function CalculatorPage() {
       {/* Price Settings */}
       <motion.div
         variants={itemVariants}
-        className='bg-white rounded-2xl shadow-lg p-8 border border-purple-100'
+        className='bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8 border border-purple-100'
       >
-        <h2 className='text-2xl font-bold text-gray-900 mb-6'>
+        <h2 className='text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6'>
           Τιμές Λαδιού (τενεκές)
         </h2>
 
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-6'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6'>
           {/* Buy Price */}
           <div>
-            <label className='block text-sm font-semibold text-gray-700 mb-3'>
+            <label className='block text-sm font-semibold text-gray-700 mb-2 sm:mb-3'>
               <div className='flex items-center gap-2'>
-                <TrendingDown className='w-5 h-5 text-red-500' />
+                <TrendingDown className='w-4 h-4 sm:w-5 sm:h-5 text-red-500' />
                 Τιμή Αγοράς (€)
               </div>
             </label>
@@ -149,21 +149,21 @@ export default function CalculatorPage() {
                 min='0'
                 value={buyPrice}
                 onChange={(e) => setBuyPrice(e.target.value)}
-                className='w-full px-4 py-3 pl-12 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition bg-white text-lg font-semibold'
+                className='w-full px-4 py-2.5 sm:py-3 pl-10 sm:pl-12 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition bg-white text-base sm:text-lg font-semibold'
                 placeholder='0.00'
               />
-              <DollarSign className='absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400' />
+              <DollarSign className='absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400' />
             </div>
-            <p className='text-sm text-gray-500 mt-2'>
+            <p className='text-xs sm:text-sm text-gray-500 mt-2'>
               Τιμή που αγοράζετε τον τενεκέ λαδιού
             </p>
           </div>
 
           {/* Sell Price */}
           <div>
-            <label className='block text-sm font-semibold text-gray-700 mb-3'>
+            <label className='block text-sm font-semibold text-gray-700 mb-2 sm:mb-3'>
               <div className='flex items-center gap-2'>
-                <TrendingUp className='w-5 h-5 text-green-500' />
+                <TrendingUp className='w-4 h-4 sm:w-5 sm:h-5 text-green-500' />
                 Τιμή Πώλησης (€)
               </div>
             </label>
@@ -174,27 +174,27 @@ export default function CalculatorPage() {
                 min='0'
                 value={sellPrice}
                 onChange={(e) => setSellPrice(e.target.value)}
-                className='w-full px-4 py-3 pl-12 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition bg-white text-lg font-semibold'
+                className='w-full px-4 py-2.5 sm:py-3 pl-10 sm:pl-12 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition bg-white text-base sm:text-lg font-semibold'
                 placeholder='0.00'
               />
-              <DollarSign className='absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400' />
+              <DollarSign className='absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400' />
             </div>
-            <p className='text-sm text-gray-500 mt-2'>
+            <p className='text-xs sm:text-sm text-gray-500 mt-2'>
               Τιμή που πουλάτε τον τενεκέ λαδιού
             </p>
           </div>
         </div>
 
         {/* Profit Calculation */}
-        <div className='bg-linear-to-r from-pink-50 to-purple-50 rounded-xl p-6 mb-6'>
-          <h3 className='text-lg font-semibold text-gray-900 mb-4'>
+        <div className='bg-linear-to-r from-pink-50 to-purple-50 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6'>
+          <h3 className='text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4'>
             Κέρδος ανά Τενεκέ
           </h3>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-            <div className='bg-white rounded-lg p-4 shadow-sm'>
-              <p className='text-sm text-gray-600 mb-1'>Κέρδος σε €</p>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4'>
+            <div className='bg-white rounded-lg p-3 sm:p-4 shadow-sm'>
+              <p className='text-xs sm:text-sm text-gray-600 mb-1'>Κέρδος σε €</p>
               <p
-                className={`text-2xl font-bold ${
+                className={`text-xl sm:text-2xl font-bold ${
                   profit >= 0 ? 'text-green-600' : 'text-red-600'
                 }`}
               >
@@ -202,10 +202,10 @@ export default function CalculatorPage() {
                 {profit.toFixed(2)} €
               </p>
             </div>
-            <div className='bg-white rounded-lg p-4 shadow-sm'>
-              <p className='text-sm text-gray-600 mb-1'>Ποσοστό Κέρδους</p>
+            <div className='bg-white rounded-lg p-3 sm:p-4 shadow-sm'>
+              <p className='text-xs sm:text-sm text-gray-600 mb-1'>Ποσοστό Κέρδους</p>
               <p
-                className={`text-2xl font-bold ${
+                className={`text-xl sm:text-2xl font-bold ${
                   profit >= 0 ? 'text-green-600' : 'text-red-600'
                 }`}
               >
@@ -217,8 +217,8 @@ export default function CalculatorPage() {
         </div>
 
         {/* Bulk Calculator */}
-        <div className='bg-linear-to-r from-purple-50 to-pink-50 rounded-xl p-6 mb-6 border-2 border-purple-200'>
-          <h3 className='text-lg font-semibold text-gray-900 mb-4'>
+        <div className='bg-linear-to-r from-purple-50 to-pink-50 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 border-2 border-purple-200'>
+          <h3 className='text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4'>
             🧮 Υπολογισμός για Πολλαπλά Τενεκέδες
           </h3>
 
@@ -232,18 +232,18 @@ export default function CalculatorPage() {
               step='1'
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              className='w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition bg-white text-lg font-semibold'
+              className='w-full px-4 py-2.5 sm:py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition bg-white text-base sm:text-lg font-semibold'
               placeholder='1'
             />
           </div>
 
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-            <div className='bg-white rounded-lg p-4 shadow-md border-2 border-red-100'>
-              <p className='text-sm text-gray-600 mb-1 flex items-center gap-1'>
-                <TrendingDown className='w-4 h-4 text-red-500' />
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4'>
+            <div className='bg-white rounded-lg p-3 sm:p-4 shadow-md border-2 border-red-100'>
+              <p className='text-xs sm:text-sm text-gray-600 mb-1 flex items-center gap-1'>
+                <TrendingDown className='w-3 h-3 sm:w-4 sm:h-4 text-red-500' />
                 Πληρωμή στον Προμηθευτή
               </p>
-              <p className='text-2xl font-bold text-red-600'>
+              <p className='text-xl sm:text-2xl font-bold text-red-600'>
                 {(parseFloat(buyPrice) * parseFloat(quantity || '0')).toFixed(
                   2
                 )}{' '}
@@ -254,12 +254,12 @@ export default function CalculatorPage() {
               </p>
             </div>
 
-            <div className='bg-white rounded-lg p-4 shadow-md border-2 border-blue-100'>
-              <p className='text-sm text-gray-600 mb-1 flex items-center gap-1'>
-                <DollarSign className='w-4 h-4 text-blue-500' />
+            <div className='bg-white rounded-lg p-3 sm:p-4 shadow-md border-2 border-blue-100'>
+              <p className='text-xs sm:text-sm text-gray-600 mb-1 flex items-center gap-1'>
+                <DollarSign className='w-3 h-3 sm:w-4 sm:h-4 text-blue-500' />
                 Συνολική Πώληση
               </p>
-              <p className='text-2xl font-bold text-blue-600'>
+              <p className='text-xl sm:text-2xl font-bold text-blue-600'>
                 {(parseFloat(sellPrice) * parseFloat(quantity || '0')).toFixed(
                   2
                 )}{' '}
@@ -270,12 +270,12 @@ export default function CalculatorPage() {
               </p>
             </div>
 
-            <div className='bg-white rounded-lg p-4 shadow-md border-2 border-green-100'>
-              <p className='text-sm text-gray-600 mb-1 flex items-center gap-1'>
-                <TrendingUp className='w-4 h-4 text-green-500' />
+            <div className='bg-white rounded-lg p-3 sm:p-4 shadow-md border-2 border-green-100'>
+              <p className='text-xs sm:text-sm text-gray-600 mb-1 flex items-center gap-1'>
+                <TrendingUp className='w-3 h-3 sm:w-4 sm:h-4 text-green-500' />
                 Καθαρό Κέρδος
               </p>
-              <p className='text-2xl font-bold text-green-600'>
+              <p className='text-xl sm:text-2xl font-bold text-green-600'>
                 +
                 {(
                   (parseFloat(sellPrice) - parseFloat(buyPrice)) *
@@ -294,12 +294,12 @@ export default function CalculatorPage() {
       {/* Info Section */}
       <motion.div
         variants={itemVariants}
-        className='bg-blue-50 border-2 border-blue-200 rounded-2xl p-6'
+        className='bg-blue-50 border-2 border-blue-200 rounded-2xl p-4 sm:p-6'
       >
-        <h3 className='text-lg font-semibold text-blue-900 mb-2'>
+        <h3 className='text-base sm:text-lg font-semibold text-blue-900 mb-2'>
           ℹ️ Πληροφορίες
         </h3>
-        <p className='text-blue-800'>
+        <p className='text-blue-800 text-sm sm:text-base'>
           Ο υπολογιστής αποθηκεύει αυτόματα τις τελευταίες τιμές που εισαγάγατε.
           Οι τιμές θα είναι διαθέσιμες ακόμα και μετά από έξοδο και
           επανασύνδεση.
