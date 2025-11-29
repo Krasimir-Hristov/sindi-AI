@@ -259,7 +259,9 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                   <p className='font-semibold text-gray-900 text-sm sm:text-base truncate'>
                     {order.client.first_name} {order.client.last_name}
                   </p>
-                  <p className='text-xs sm:text-sm text-gray-500 truncate'>{order.client.phone}</p>
+                  <p className='text-xs sm:text-sm text-gray-500 truncate'>
+                    {order.client.phone}
+                  </p>
                 </div>
               </div>
             </div>
@@ -297,7 +299,9 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                 )} flex items-center gap-1 sm:gap-2 font-semibold text-xs sm:text-sm whitespace-nowrap`}
               >
                 {getStatusIcon(order.status)}
-                <span className='hidden xs:inline'>{getStatusText(order.status)}</span>
+                <span className='hidden xs:inline'>
+                  {getStatusText(order.status)}
+                </span>
               </div>
 
               {/* Expand Icon */}
@@ -314,7 +318,9 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
           {/* Date */}
           <div className='mt-3 sm:mt-4 flex items-center gap-2 text-xs sm:text-sm text-gray-500'>
             <Clock className='w-3 h-3 sm:w-4 sm:h-4' />
-            <span className='truncate'>{new Date(order.created_at).toLocaleString('el-GR')}</span>
+            <span className='truncate'>
+              {new Date(order.created_at).toLocaleString('el-GR')}
+            </span>
           </div>
         </div>
 
@@ -416,7 +422,9 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                   {/* Product Financial Summary */}
                   <div className='grid grid-cols-3 gap-2 sm:gap-3 mb-2 sm:mb-3 p-2 sm:p-3 bg-gray-50 rounded-lg'>
                     <div className='text-center'>
-                      <p className='text-xs text-gray-500 mb-0.5 sm:mb-1'>Σύνολο</p>
+                      <p className='text-xs text-gray-500 mb-0.5 sm:mb-1'>
+                        Σύνολο
+                      </p>
                       <p className='font-semibold text-gray-900 text-xs sm:text-sm lg:text-base'>
                         €{(item.unit_price * item.quantity).toFixed(2)}
                       </p>
@@ -425,7 +433,9 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                       </p>
                     </div>
                     <div className='text-center'>
-                      <p className='text-xs text-gray-500 mb-0.5 sm:mb-1'>Πληρωμένο</p>
+                      <p className='text-xs text-gray-500 mb-0.5 sm:mb-1'>
+                        Πληρωμένο
+                      </p>
                       <p className='font-semibold text-green-600 text-xs sm:text-sm lg:text-base'>
                         €{(item.unit_price * item.paid_quantity).toFixed(2)}
                       </p>
@@ -434,7 +444,9 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                       </p>
                     </div>
                     <div className='text-center'>
-                      <p className='text-xs text-gray-500 mb-0.5 sm:mb-1'>Υπόλοιπο</p>
+                      <p className='text-xs text-gray-500 mb-0.5 sm:mb-1'>
+                        Υπόλοιπο
+                      </p>
                       <p className='font-semibold text-orange-600 text-xs sm:text-sm lg:text-base'>
                         €
                         {(
@@ -521,7 +533,9 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                               className='px-3 sm:px-4 py-1.5 sm:py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2'
                             >
                               <DollarSign className='w-3.5 h-3.5 sm:w-4 sm:h-4' />
-                              <span className='hidden sm:inline'>Πλήρης Πληρωμή</span>
+                              <span className='hidden sm:inline'>
+                                Πλήρης Πληρωμή
+                              </span>
                               <span className='sm:hidden'>Πληρωμή</span>
                             </button>
                           )}
@@ -532,7 +546,9 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                             disabled={loading}
                             className='px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors disabled:opacity-50 text-xs sm:text-sm font-semibold'
                           >
-                            <span className='hidden sm:inline'>Επεξεργασία Πληρωμής</span>
+                            <span className='hidden sm:inline'>
+                              Επεξεργασία Πληρωμής
+                            </span>
                             <span className='sm:hidden'>Επεξ. Πληρ.</span>
                           </button>
                         </>
@@ -549,7 +565,9 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                 <p className='text-xs sm:text-sm font-semibold text-blue-900 mb-1'>
                   Σημειώσεις:
                 </p>
-                <p className='text-xs sm:text-sm text-blue-700'>{order.notes}</p>
+                <p className='text-xs sm:text-sm text-blue-700'>
+                  {order.notes}
+                </p>
               </div>
             )}
 
@@ -563,7 +581,9 @@ export default function OrderCard({ order, onUpdate }: OrderCardProps) {
                     className='flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 text-xs sm:text-sm lg:text-base'
                   >
                     <DollarSign className='w-4 h-4 sm:w-5 sm:h-5' />
-                    <span className='hidden sm:inline'>Πλήρης Πληρωμή Παραγγελίας</span>
+                    <span className='hidden sm:inline'>
+                      Πλήρης Πληρωμή Παραγγελίας
+                    </span>
                     <span className='sm:hidden'>Πλήρης Πληρ.</span>
                   </button>
                 )}

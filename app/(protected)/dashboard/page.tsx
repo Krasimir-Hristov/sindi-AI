@@ -211,7 +211,9 @@ export default function DashboardPage() {
               <h3 className='text-gray-600 text-xs sm:text-sm font-medium mb-1'>
                 {stat.title}
               </h3>
-              <p className='text-2xl sm:text-3xl font-bold text-gray-900'>{stat.value}</p>
+              <p className='text-2xl sm:text-3xl font-bold text-gray-900'>
+                {stat.value}
+              </p>
             </motion.div>
           );
         })}

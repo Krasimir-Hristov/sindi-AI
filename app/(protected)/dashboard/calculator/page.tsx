@@ -109,7 +109,9 @@ export default function CalculatorPage() {
               <h1 className='text-2xl sm:text-3xl lg:text-4xl font-bold bg-linear-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent'>
                 Υπολογιστής Κέρδους
               </h1>
-              <p className='text-gray-600 mt-1 text-sm sm:text-base'>Υπολογισμός κέρδους για λάδι</p>
+              <p className='text-gray-600 mt-1 text-sm sm:text-base'>
+                Υπολογισμός κέρδους για λάδι
+              </p>
             </div>
           </div>
           <motion.button
@@ -192,7 +194,9 @@ export default function CalculatorPage() {
           </h3>
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4'>
             <div className='bg-white rounded-lg p-3 sm:p-4 shadow-sm'>
-              <p className='text-xs sm:text-sm text-gray-600 mb-1'>Κέρδος σε €</p>
+              <p className='text-xs sm:text-sm text-gray-600 mb-1'>
+                Κέρδος σε €
+              </p>
               <p
                 className={`text-xl sm:text-2xl font-bold ${
                   profit >= 0 ? 'text-green-600' : 'text-red-600'
@@ -203,7 +207,9 @@ export default function CalculatorPage() {
               </p>
             </div>
             <div className='bg-white rounded-lg p-3 sm:p-4 shadow-sm'>
-              <p className='text-xs sm:text-sm text-gray-600 mb-1'>Ποσοστό Κέρδους</p>
+              <p className='text-xs sm:text-sm text-gray-600 mb-1'>
+                Ποσοστό Κέρδους
+              </p>
               <p
                 className={`text-xl sm:text-2xl font-bold ${
                   profit >= 0 ? 'text-green-600' : 'text-red-600'
